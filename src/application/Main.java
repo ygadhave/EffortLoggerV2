@@ -6,21 +6,30 @@ import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 
+// Main class written by Donovan Harp and Yashwhat Gadhave
 
 public class Main extends Application {
 	
+	// Database
 	private Database database;
 	
+	// Console Tab
 	private Tab consoleTab;
 	private ConsolePane consolePane;
 	private ConsoleManager consoleManager;
 	
+	// Planning Poker Tab
 	private Tab planningPokerTab;
 	private PlanningPokerPane planningPokerPane;
 	private PlanningPokerManager planningPokerManager;
 	
-	private Tab jaylenePrototypeTab;
-	private JaylenePrototype jaylenePrototype;
+	// Jaylene's Prototype
+	private Tab userInterfacePrototypeTab;
+	private UserInterfacePrototype userInterfacePrototype;
+	
+	// Yashwhat's Prototype
+	private Button onboardingButton;
+	private OnboardingPrototype onboardingPrototype;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -43,30 +52,31 @@ public class Main extends Application {
 			planningPokerTab.setContent(planningPokerPane);
 			
 			// Setup Jaylene's prototype
-			jaylenePrototypeTab = new Tab("Jaylene Prototype");
-			jaylenePrototype = new JaylenePrototype();
-			jaylenePrototypeTab.setContent(jaylenePrototype);
+			userInterfacePrototypeTab = new Tab("UI Prototype");
+			userInterfacePrototype = new UserInterfacePrototype();
+			userInterfacePrototypeTab.setContent(userInterfacePrototype);
 			
 			// Add tabs
-			root.getTabs().addAll(consoleTab, planningPokerTab, jaylenePrototypeTab);
+			root.getTabs().addAll(consoleTab, planningPokerTab, userInterfacePrototypeTab);
 			
 			// Setup the main scene
 			Scene scene = new Scene(root,400,400);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
+			// ----------Yashwhat's Code----------
 			// Setup the user orientation button
-		    Button userOrientationButton = new Button("User Orientation");
-		    userOrientationButton.setOnAction(e -> {
-		        OnboardingPrototype userOrientationPrototype = new OnboardingPrototype(primaryStage);
+		    onboardingButton = new Button("User Orientation");
+		    onboardingButton.setOnAction(e -> {
+		        onboardingPrototype = new OnboardingPrototype(primaryStage);
 		        Stage userOrientationStage = new Stage();
-		        userOrientationPrototype.start(userOrientationStage);
+		        onboardingPrototype.start(userOrientationStage);
 		    });
 
 		    // Add the user orientation button
-		    // Extra comment
-		    VBox mainContainer = new VBox(root, userOrientationButton);
+		    VBox mainContainer = new VBox(root, onboardingButton);
 		    Scene mainScene = new Scene(mainContainer, 800, 600);
-			
+		    // ----------------------------------
+		    
 		    // Show the scene
 			primaryStage.setScene(mainScene);
 			primaryStage.show();

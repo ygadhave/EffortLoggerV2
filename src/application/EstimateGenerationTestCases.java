@@ -5,7 +5,9 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import org.junit.Test;
 
-public class TestCases {
+// Planning poker estimate generation test cases by Donovan Harp
+
+public class EstimateGenerationTestCases {
 	
 	public Database database = new Database();
 	public ConsoleManager consoleManager = new ConsoleManager(database);

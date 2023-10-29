@@ -2,6 +2,8 @@ package application;
 
 import java.util.ArrayList;
 
+// PlanningPokerManager class written by Donovan Harp
+
 public class PlanningPokerManager {
 	private Database database;
 	

@@ -18,7 +18,7 @@ import org.junit.Test;
 /**
  * Test class for log viewing with different numbers of logs
  */
-public class ReeseLogTestCases {
+public class LogGenerationTestCases {
 
     private Database database;                  
     private ArrayList<EffortLog> logs;  

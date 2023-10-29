@@ -2,8 +2,12 @@ package application;
 
 import java.util.ArrayList;
 
+// Database class written by Donovan Harp
+
 public class Database{
+	// TO DO: Add separate project objects with their own effort log lists and project/task data
 	
+	// Effort logs list
 	private ArrayList<EffortLog> effortLogsList;
 	
 	public Database() {

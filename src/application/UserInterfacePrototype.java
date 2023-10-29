@@ -8,9 +8,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class JaylenePrototype extends VBox {
+// UserInterfacePrototype class writen by Jaylene Nunez
 
-    public JaylenePrototype() {
+public class UserInterfacePrototype extends VBox {
+
+    public UserInterfacePrototype() {
 
         VBox root = new VBox(10);
 

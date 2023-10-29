@@ -1,6 +1,8 @@
 package application;
 
+// EffortLog class written by Donovan Harp
 public class EffortLog {
+	// Data attributes
 	private int effortHours;
 	private int effortMinutes;
 	private double weight;

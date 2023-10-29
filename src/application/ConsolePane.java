@@ -1,17 +1,18 @@
 package application;
 
-import java.util.ArrayList;
-
-import application.ItemPane.AddButtonHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 
+// ConsolePane class written by Donovan Harp
+
 public class ConsolePane extends VBox {
 
+	// Manager
 	private ConsoleManager manager;
 	
+	// UI Elements
 	private Label hoursLabel;
 	private TextField hoursField;
 	private Label minutesLabel;
@@ -20,7 +21,9 @@ public class ConsolePane extends VBox {
 	private Label resultText;
 	private Button clearLogsButton;
 	
+	// Constructor
 	public ConsolePane(ConsoleManager m) {
+		// Initialize manager and UI elements
 		manager = m;
 		
 		hoursLabel = new Label("Set hours:");
@@ -35,9 +38,11 @@ public class ConsolePane extends VBox {
 		generateLogButton.setOnAction(new GenerateLogButtonHandler());
 		clearLogsButton.setOnAction(new ClearLogsButtonHandler());
 		
+		// Add UI elements to pane
 		this.getChildren().addAll(hoursLabel, hoursField, minutesLabel, minutesField, generateLogButton, resultText, clearLogsButton);
 	}
 	
+	// Handles clicking the generate log button
 	private class GenerateLogButtonHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
 			String hoursString = hoursField.getText();
@@ -73,6 +78,7 @@ public class ConsolePane extends VBox {
 		}
 	}
 	
+	// Handles clicking the clear logs button
 	private class ClearLogsButtonHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
 			try {

@@ -7,6 +7,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+// OnboardingPrototype class written by Yashwant Gadhave
+
 public class OnboardingPrototype extends Application {
 
     private int currentStep = 1;

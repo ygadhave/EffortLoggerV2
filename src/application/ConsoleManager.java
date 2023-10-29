@@ -1,12 +1,16 @@
 package application;
 
+// ConsoleManager class by Donovan Harp
+
 public class ConsoleManager {
 	private Database database;
 	
+	// Constructor
 	public ConsoleManager(Database d) {
 		database = d;
 	}
 	
+	// Create a new effort log in the database
 	public boolean CreateNewEffortLog(int hours, int minutes) {
 		EffortLog newLog = new EffortLog(hours, minutes);
 		if (database.AddLog(newLog)) {
@@ -28,6 +32,7 @@ public class ConsoleManager {
 		}
 	}
 	
+	// Clear all effort logs in the database
 	public void ClearEffortLogs() {
 		database.ClearEffortLogs();
 	}
