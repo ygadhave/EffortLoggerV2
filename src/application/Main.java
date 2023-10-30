@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 
-// Main class written by Donovan Harp and Yashwhat Gadhave
+// Main class written by Donovan Harp, Yashwhat Gadhave, and Troy Reiling
 
 public class Main extends Application {
 	
@@ -23,13 +23,19 @@ public class Main extends Application {
 	private PlanningPokerPane planningPokerPane;
 	private PlanningPokerManager planningPokerManager;
 	
-	// Jaylene's Prototype
+	// User Interface Tab
 	private Tab userInterfacePrototypeTab;
 	private UserInterfacePrototype userInterfacePrototype;
 	
-	// Yashwhat's Prototype
+	// Onboarding Tab
 	private Button onboardingButton;
 	private OnboardingPrototype onboardingPrototype;
+	
+	// ----------Troy's Code----------
+	// Authentication Tab
+	private Tab authenticationTab;
+	private AuthenticationPane authenticationPane;
+	// -------------------------------
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -56,8 +62,15 @@ public class Main extends Application {
 			userInterfacePrototype = new UserInterfacePrototype();
 			userInterfacePrototypeTab.setContent(userInterfacePrototype);
 			
+			// ----------Troy's Code----------
+			// Setup authentication tab
+			authenticationTab = new Tab("Authentication");
+			authenticationPane = new AuthenticationPane();
+			authenticationTab.setContent(authenticationPane);
+			// -------------------------------
+			
 			// Add tabs
-			root.getTabs().addAll(consoleTab, planningPokerTab, userInterfacePrototypeTab);
+			root.getTabs().addAll(consoleTab, planningPokerTab, userInterfacePrototypeTab, authenticationTab);
 			
 			// Setup the main scene
 			Scene scene = new Scene(root,400,400);
