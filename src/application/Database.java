@@ -8,23 +8,41 @@ public class Database{
 	// TO DO: Add separate project objects with their own effort log lists and project/task data
 	
 	// Effort logs list
-	private ArrayList<EffortLog> effortLogsList;
+	private ArrayList<Project> projects;
+	private Definitions definitions;
 	
 	public Database() {
-		effortLogsList = new ArrayList<EffortLog>();
+		projects = new ArrayList<Project>();
+		definitions = new Definitions();
 	}
 	
-	public ArrayList<EffortLog> GetEffortLogs() {
-		return effortLogsList;
+	public ArrayList<Project> GetProjects() {
+		return projects;
 	}
 	
-	public void ClearEffortLogs() {
-		effortLogsList.clear();
+	public Project GetProject(int index) {
+		return projects.get(index);
 	}
 	
-	public boolean AddLog(EffortLog log) {
+	public void AddProject(Project p) {
+		projects.add(p);
+	}
+	
+	public void ClearProjects() {
+		projects.clear();
+	}
+	
+	public ArrayList<EffortLog> GetEffortLogs(Project p) {
+		return p.GetEffortLogs();
+	}
+	
+	public void ClearEffortLogs(Project p) {
+		p.ClearEffortLogs();
+	}
+	
+	public boolean AddLog(EffortLog log, Project p) {
 		try {
-			effortLogsList.add(log);
+			p.AddLog(log);
 		}
 		catch(Exception e) {
 			System.out.println(e.getMessage());

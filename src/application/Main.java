@@ -13,10 +13,30 @@ public class Main extends Application {
 	// Database
 	private Database database;
 	
-	// Console Tab
+	// Effort Console Tab
 	private Tab consoleTab;
 	private ConsolePane consolePane;
 	private ConsoleManager consoleManager;
+	
+	// Effort Log Editor Tab
+	private Tab editorTab;
+	private EditorPane editorPane;
+	private EditorManager editorManager;
+	
+	// Defect Log Tab
+	private Tab defectTab;
+	private DefectPane defectPane;
+	private DefectManager defectManager;
+	
+	// Effort Log Viewer Tab
+	private Tab logsTab;
+	private LogsPane logsPane;
+	private LogsManager logsManager;
+	
+	// Definitions Tab
+	private Tab definitionsTab;
+	private DefinitionsPane definitionsPane;
+	private DefinitionsManager definitionsManager;
 	
 	// Planning Poker Tab
 	private Tab planningPokerTab;
@@ -45,11 +65,42 @@ public class Main extends Application {
 			// Initialize the database
 			database = new Database();
 			
+			// NOTE: There will always be exactly 10 projects created, and these can simply
+			//       be modified to fit the user's ends. These 10 will be created when the user
+			//       first boots up the program and all be empty.
+			
+			// Create a single test project
+			database.AddProject(new Project());
+			
 			// Setup the console tab
-			consoleTab = new Tab("Main");
+			consoleTab = new Tab("Effort Console");
 			consoleManager = new ConsoleManager(database);
 			consolePane = new ConsolePane(consoleManager);
 			consoleTab.setContent(consolePane);
+			
+			// Setup the editor tab
+			editorTab = new Tab("Effort Log Editor");
+			editorManager = new EditorManager(database);
+			editorPane = new EditorPane(editorManager);
+			editorTab.setContent(editorPane);
+			
+			// Setup the defect tab
+			defectTab = new Tab("Defect Console");
+			defectManager = new DefectManager(database);
+			defectPane = new DefectPane(defectManager);
+			defectTab.setContent(defectPane);
+			
+			// Setup the logs tab
+			logsTab = new Tab("Logs");
+			logsManager = new LogsManager(database);
+			logsPane = new LogsPane(logsManager);
+			logsTab.setContent(logsPane);
+			
+			// Setup the definitions tab
+			definitionsTab = new Tab("Definitions");
+			definitionsManager = new DefinitionsManager(database);
+			definitionsPane = new DefinitionsPane(definitionsManager);
+			definitionsTab.setContent(definitionsPane);
 			
 			// Setup the planning poker tab
 			planningPokerTab = new Tab("Planning Poker");
@@ -70,7 +121,10 @@ public class Main extends Application {
 			// -------------------------------
 			
 			// Add tabs
-			root.getTabs().addAll(consoleTab, planningPokerTab, userInterfacePrototypeTab, authenticationTab);
+			root.getTabs().addAll(consoleTab, editorTab, defectTab);
+			root.getTabs().addAll(logsTab, definitionsTab, planningPokerTab);
+			// Temporary tabs from original mainline prototype
+			root.getTabs().addAll(userInterfacePrototypeTab, authenticationTab);
 			
 			// Setup the main scene
 			Scene scene = new Scene(root,400,400);

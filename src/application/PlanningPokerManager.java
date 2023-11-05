@@ -12,7 +12,7 @@ public class PlanningPokerManager {
 	}
 	
 	public ArrayList<EffortLog> GetEffortLogs() {
-		return database.GetEffortLogs();
+		return database.GetEffortLogs(database.GetProject(0));
 	}
 	
 	// Function to calculate the story points for an effort log
