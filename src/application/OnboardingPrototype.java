@@ -64,10 +64,10 @@ public class OnboardingPrototype extends Application {
     }
     
     public void calculateStoryPoints(EffortLog log, int pointsPerHour) {
-        int hours = log.GetHours();
-        int minutes = log.GetMinutes();
+        int hours = log.getHours();
+        int minutes = log.getMinutes();
         int points = (hours * pointsPerHour) + (minutes * (pointsPerHour / 60));
-        log.SetStoryPoints(points);
+        log.setStoryPoints(points);
     }
     
     private void showSetPreferencesStep(VBox root) {
@@ -193,7 +193,7 @@ public class OnboardingPrototype extends Application {
         Label welcomeLabel = new Label("Welcome, " + username + "!");
         Label projectInfoLabel = new Label("Project created by the name: " + projectName);
        
-        String storyPointsText = (effortLog != null) ? "Story Points calculated: " + effortLog.GetStoryPoints() : "";
+        String storyPointsText = (effortLog != null) ? "Story Points calculated: " + effortLog.getStoryPoints() : "";
         Label storyPointsLabel = new Label(storyPointsText);
         
         Button startButton = new Button("Get Started");

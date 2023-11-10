@@ -14,9 +14,16 @@ public class ConsoleManager {
 	}
 	
 	// Create a new effort log in the database
-	public boolean CreateNewEffortLog(int hours, int minutes) {
+	public boolean createNewEffortLog(int hours, int minutes) {
 		EffortLog newLog = new EffortLog(hours, minutes);
-		if (database.AddLog(newLog, database.GetProject(0))) {
+		
+		// TEMPORARY CODE FOR TESTING WITH DEFECT LOGS
+		// DefectLog testDefect1 = new DefectLog(hours, 0, 1, 0);
+		// DefectLog testDefect2 = new DefectLog(hours, 30, 1, 0);
+		// newLog.AddDefectLog(testDefect1);
+		// newLog.AddDefectLog(testDefect2);
+		
+		if (database.addLog(newLog, database.getProject(0))) {
 			return true;
 		}
 		else {
@@ -25,9 +32,10 @@ public class ConsoleManager {
 	}
 	
 	// Overloaded method call for testing purposes
-	public boolean CreateNewEffortLog(int hours, int minutes, double weight, int bias) {
+	public boolean createNewEffortLog(int hours, int minutes, double weight, int bias) {
 		EffortLog newLog = new EffortLog(hours, minutes, weight, bias);
-		if (database.AddLog(newLog, database.GetProject(0))) {
+		
+		if (database.addLog(newLog, database.getProject(0))) {
 			return true;
 		}
 		else {
@@ -36,7 +44,7 @@ public class ConsoleManager {
 	}
 	
 	// Clear all effort logs in the database
-	public void ClearEffortLogs() {
-		database.ClearEffortLogs(database.GetProject(0));
+	public void clearEffortLogs() {
+		database.clearEffortLogs(database.getProject(0));
 	}
 }

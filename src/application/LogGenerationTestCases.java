@@ -30,7 +30,7 @@ public class LogGenerationTestCases {
     @Before
     public void setUp() {
         database = new Database();
-        logs = database.GetEffortLogs();
+        logs = database.getEffortLogs();
         random = new Random();
     }
 
@@ -60,15 +60,15 @@ public class LogGenerationTestCases {
         StringBuilder output = new StringBuilder();
         if (logs.size() < 3) {
             for (EffortLog log : logs) {
-                output.append("Story Points: " + log.GetStoryPoints() + "\\n");
+                output.append("Story Points: " + log.getStoryPoints() + "\\n");
             }
         } else if (logs.size() < 10) {
             for (EffortLog log : logs) {
-                output.append("Weight: " + log.GetWeight() + ", Bias: " + log.GetBias() + ", Story Points: " + log.GetStoryPoints() + "\\n");
+                output.append("Weight: " + log.getWeight() + ", Bias: " + log.getBias() + ", Story Points: " + log.getStoryPoints() + "\\n");
             }
         } else {
             for (EffortLog log : logs) {
-                output.append("Hours: " + log.GetHours() + ", Minutes: " + log.GetMinutes() + ", Weight: " + log.GetWeight() + ", Bias: " + log.GetBias() + ", Story Points: " + log.GetStoryPoints() + "\\n");
+                output.append("Hours: " + log.getHours() + ", Minutes: " + log.getMinutes() + ", Weight: " + log.getWeight() + ", Bias: " + log.getBias() + ", Story Points: " + log.getStoryPoints() + "\\n");
             }
         }
         return output.toString();

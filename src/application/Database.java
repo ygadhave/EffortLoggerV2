@@ -16,33 +16,33 @@ public class Database{
 		definitions = new Definitions();
 	}
 	
-	public ArrayList<Project> GetProjects() {
+	public ArrayList<Project> getProjects() {
 		return projects;
 	}
 	
-	public Project GetProject(int index) {
+	public Project getProject(int index) {
 		return projects.get(index);
 	}
 	
-	public void AddProject(Project p) {
+	public void addProject(Project p) {
 		projects.add(p);
 	}
 	
-	public void ClearProjects() {
+	public void clearProjects() {
 		projects.clear();
 	}
 	
-	public ArrayList<EffortLog> GetEffortLogs(Project p) {
-		return p.GetEffortLogs();
+	public ArrayList<EffortLog> getEffortLogs(Project p) {
+		return p.getEffortLogs();
 	}
 	
-	public void ClearEffortLogs(Project p) {
-		p.ClearEffortLogs();
+	public void clearEffortLogs(Project p) {
+		p.clearEffortLogs();
 	}
 	
-	public boolean AddLog(EffortLog log, Project p) {
+	public boolean addLog(EffortLog log, Project p) {
 		try {
-			p.AddLog(log);
+			p.addLog(log);
 		}
 		catch(Exception e) {
 			System.out.println(e.getMessage());

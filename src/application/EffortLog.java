@@ -10,6 +10,7 @@ public class EffortLog {
 	private double weight;
 	private int bias;
 	private int storyPoints;
+	private boolean selected;
 	
 	private ArrayList<DefectLog> defectLogs;
 	
@@ -20,6 +21,7 @@ public class EffortLog {
 		weight = 1;
 		bias = 0;
 		storyPoints = -1;
+		selected = true;
 		
 		defectLogs = new ArrayList<DefectLog>();
 	}
@@ -31,6 +33,7 @@ public class EffortLog {
 		weight = 1;
 		bias = 0;
 		storyPoints = -1;
+		selected = true;
 		
 		defectLogs = new ArrayList<DefectLog>();
 	}
@@ -42,48 +45,61 @@ public class EffortLog {
 		weight = w;
 		bias = b;
 		storyPoints = -1;
+		selected = true;
 		
 		defectLogs = new ArrayList<DefectLog>();
 	}
 	
-	public void SetTime(int hours, int minutes) {
+	public void setTime(int hours, int minutes) {
 		effortHours = hours;
 		effortMinutes = minutes;
 	}
 	
-	public int GetHours() {
+	public int getHours() {
 		return effortHours;
 	}
 	
-	public int GetMinutes() {
+	public int getMinutes() {
 		return effortMinutes;
 	}
 	
-	public void SetWeight(double w) {
+	public void setWeight(double w) {
 		weight = w;
 	}
 	
-	public double GetWeight() {
+	public double getWeight() {
 		return weight;
 	}
 	
-	public void SetBias(int b) {
-		weight = b;
+	public void setBias(int b) {
+		bias = b;
 	}
 	
-	public int GetBias() {
+	public int getBias() {
 		return bias;
 	}
 	
-	public void SetStoryPoints(int points) {
+	public void setStoryPoints(int points) {
 		storyPoints = points;
 	}
 	
-	public int GetStoryPoints() {
+	public int getStoryPoints() {
 		return storyPoints;
 	}
 	
-	public ArrayList<DefectLog> GetDefectLogs() {
+	public void setSelected(boolean s) {
+		selected = s;
+	}
+	
+	public boolean getSelected() {
+		return selected;
+	}
+	
+	public ArrayList<DefectLog> getDefectLogs() {
 		return defectLogs;
+	}
+	
+	public void addDefectLog(DefectLog newLog) {
+		defectLogs.add(newLog);
 	}
 }
