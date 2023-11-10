@@ -70,7 +70,7 @@ public class Main extends Application {
 			//       first boots up the program and all be empty.
 			
 			// Create a single test project
-			database.AddProject(new Project());
+			database.addProject(new Project());
 			
 			// Setup the console tab
 			consoleTab = new Tab("Effort Console");

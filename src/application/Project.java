@@ -29,39 +29,39 @@ public class Project {
 		effortLogs = new ArrayList<EffortLog>();
 	}
 	
-	public String GetProjectName() {
+	public String getProjectName() {
 		return projectName;
 	}
 	
-	public void SetProjectName(String newName) {
+	public void setProjectName(String newName) {
 		projectName = newName;
 	}
 	
-	public String GetUserStoryName() {
+	public String getUserStoryName() {
 		return userStoryName;
 	}
 	
-	public void SetUserStoryName(String newName) {
+	public void setUserStoryName(String newName) {
 		userStoryName = newName;
 	}
 	
-	public String GetUserStoryDescription() {
+	public String getUserStoryDescription() {
 		return userStoryDescription;
 	}
 	
-	public void SetUserStoryDescription(String newDesc) {
+	public void setUserStoryDescription(String newDesc) {
 		userStoryDescription = newDesc;
 	}
 	
-	public ArrayList<EffortLog> GetEffortLogs() {
+	public ArrayList<EffortLog> getEffortLogs() {
 		return effortLogs;
 	}
 	
-	public void ClearEffortLogs() {
+	public void clearEffortLogs() {
 		effortLogs.clear();
 	}
 	
-	public void AddLog(EffortLog newLog) {
+	public void addLog(EffortLog newLog) {
 		effortLogs.add(newLog);
 	}
 }

@@ -58,7 +58,7 @@ public class ConsolePane extends VBox {
 				int hours = Integer.parseInt(hoursString);
 				int minutes = Integer.parseInt(minutesString);
 				
-				if (manager.CreateNewEffortLog(hours, minutes)) {				
+				if (manager.createNewEffortLog(hours, minutes)) {				
 					System.out.println("Successfully created new effort log.");
 					resultText.setText("Successfully created new effort log.");
 				}
@@ -82,7 +82,7 @@ public class ConsolePane extends VBox {
 	private class ClearLogsButtonHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
 			try {
-				manager.ClearEffortLogs();
+				manager.clearEffortLogs();
 			}
 			catch (Exception exception) {
 				System.out.println(exception.getMessage());
