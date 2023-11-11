@@ -16,7 +16,7 @@ public class EstimateGenerationTestCases {
 	public final int STORY_POINTS_PER_HOUR = 60;
 	
 	public int calculate() {
-		logs = planningPokerManager.GetEffortLogs();
+		logs = planningPokerManager.getEffortLogs();
 		return planningPokerManager.calculateAverage(logs, STORY_POINTS_PER_HOUR);
 	}
 	
@@ -31,7 +31,7 @@ public class EstimateGenerationTestCases {
 	@Test
 	public void TC2_1() {
 		consoleManager.createNewEffortLog(3, 0, 1, 0);
-		logs = planningPokerManager.GetEffortLogs();
+		logs = planningPokerManager.getEffortLogs();
 		assertEquals(calculate(), 180);
 		consoleManager.clearEffortLogs();
 	}

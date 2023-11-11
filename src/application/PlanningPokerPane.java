@@ -1,9 +1,11 @@
 package application;
 
 import java.util.ArrayList;
+import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.*;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 // PlanningPokerPane class written by Donovan Harp
@@ -12,6 +14,22 @@ public class PlanningPokerPane extends VBox {
 	
 	// Manager
 	private PlanningPokerManager manager;
+	
+	// Project Info Window
+	Stage infoStage;
+	
+	// Header Elements
+	private Project selectedProject;
+	private String selectedProjectName;
+	private String selectedProjectNumber;
+	private String userStoryName;
+	private String userStoryDescription;
+	private Button projectInfoButton;
+	
+	// Header UI Elements
+	private Label projectLabel;
+	private Label userStoryNameLabel;
+	private Label userStoryDescriptionLabel;
 	
 	// UI Elements
 	private Label storyPointsLabel;
@@ -36,8 +54,22 @@ public class PlanningPokerPane extends VBox {
 	
 	// Constructor
 	public PlanningPokerPane(PlanningPokerManager m) {
-		// Initialize the manager and UI elements
+		// Initialize the manager
 		manager = m;
+		
+		// Initialize project and header information
+		selectedProject = manager.getProjects().get(0);
+		selectedProjectName = selectedProject.getProjectName();
+		selectedProjectNumber = selectedProject.getProjectNumber();
+		userStoryName = selectedProject.getUserStoryName();
+		userStoryDescription = selectedProject.getUserStoryDescription();
+		
+		// Initialize UI Elements
+		projectLabel = new Label("Project #" + selectedProjectNumber + ": " + selectedProjectName);
+		userStoryNameLabel = new Label(userStoryName);
+		userStoryDescriptionLabel = new Label(userStoryDescription);
+		projectInfoButton = new Button("Update Project Info");
+		projectInfoButton.setOnAction(new ProjectInfoButtonHandler());
 		
 		storyPointsLabel = new Label("Story Points Per Hour:");
 		storyPointsField = new TextField("60");
@@ -64,12 +96,41 @@ public class PlanningPokerPane extends VBox {
 		generateEstimateButton.setOnAction(new GenerateEstimateButtonHandler());
 		
 		// Add the UI elements to the pane
+		this.getChildren().addAll(projectLabel, userStoryNameLabel, userStoryDescriptionLabel, projectInfoButton);
 		this.getChildren().addAll(storyPointsLabel, storyPointsField);
 		this.getChildren().addAll(viewerButtons, effortLogScrollPane, defectLogScrollPane);
 		this.getChildren().addAll(generateEstimateButton, estimateLabel, errorLabel);
 		
 		// Initialize currentlySelectedLog
 		currentlySelectedLog = null;
+	}
+	
+	public void openProjectInfoWindow() {
+		// Create the project info window
+		PlanningPokerProjectInfoWindow projectInfoWindow = new PlanningPokerProjectInfoWindow(this, manager, selectedProject);
+		Scene mainScene = new Scene(projectInfoWindow, 800, 600);
+		
+		// Show the project info window
+		infoStage = new Stage();
+		infoStage.setScene(mainScene);
+		infoStage.show();
+	}
+	
+	public void updateProjectInfo(Project newProject) {
+		// Get currently selected project and its info
+		selectedProject = newProject;
+		selectedProjectName = selectedProject.getProjectName();
+		selectedProjectNumber = selectedProject.getProjectNumber();
+		userStoryName = selectedProject.getUserStoryName();
+		userStoryDescription = selectedProject.getUserStoryDescription();
+		
+		// Set the project info UI elements on the planning poker tab
+		projectLabel.setText("Project #" + selectedProjectNumber + ": " + selectedProjectName);
+		userStoryNameLabel.setText(userStoryName);
+		userStoryDescriptionLabel.setText(userStoryDescription);
+		
+		// Close the project info window
+		infoStage.hide();
 	}
 	
 	// Updates the displayed effort log list to the current list of effort logs
@@ -156,12 +217,24 @@ public class PlanningPokerPane extends VBox {
 		}
 	}
 	
+	// Handles clicking the update project info button
+	private class ProjectInfoButtonHandler implements EventHandler<ActionEvent> {
+		public void handle(ActionEvent event) {
+			try {
+				openProjectInfoWindow();
+			}
+			catch (Exception exception) {
+				System.out.println(exception.getMessage());
+			}
+		}
+	}
+	
 	// Handles clicking the refresh button
 	private class RefreshButtonHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
 			try {
 				// Refresh the list display area
-				ArrayList<EffortLog> newLogList = manager.GetEffortLogs();
+				ArrayList<EffortLog> newLogList = selectedProject.getEffortLogs();
 				updateEffortListArea(newLogList);
 				if (currentlySelectedLog != null) {
 					ArrayList<DefectLog> newDefectLogList = currentlySelectedLog.getDefectLogs();
@@ -178,7 +251,7 @@ public class PlanningPokerPane extends VBox {
 	private class SaveSettingsButtonHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
 			try {
-				manager.saveEffortLogSettings(effortLogListArea);
+				manager.saveEffortLogSettings(effortLogListArea, selectedProject);
 				manager.saveDefectLogSettings(defectLogListArea, currentlySelectedLog);
 			}
 			catch (Exception exception) {
@@ -193,7 +266,7 @@ public class PlanningPokerPane extends VBox {
 		public void handle(ActionEvent event) {
 			try {
 				// Save current settings to the database
-				manager.saveEffortLogSettings(effortLogListArea);
+				manager.saveEffortLogSettings(effortLogListArea, selectedProject);
 				manager.saveDefectLogSettings(defectLogListArea, currentlySelectedLog);
 				
 				// Initialize a new array list to store all of the logs to be used in the calculation
@@ -224,7 +297,7 @@ public class PlanningPokerPane extends VBox {
 						effortLogsToCalculate.add(log);
 					}
 					
-					ArrayList<DefectLog> defectLogs = manager.GetEffortLogs().get(i).getDefectLogs();
+					ArrayList<DefectLog> defectLogs = selectedProject.getEffortLogs().get(i).getDefectLogs();
 					if (defectLogs.size() > 0) {
 						for (int j = 0; j < defectLogs.size(); j++) {
 							if (defectLogs.get(j).getSelected()) { 
@@ -268,7 +341,7 @@ public class PlanningPokerPane extends VBox {
 				Button sourceButton = (Button)event.getSource();
 				HBox listItem = (HBox)sourceButton.getParent();
 				Label idLabel = (Label)listItem.getChildren().get(0);
-				EffortLog effortLog = manager.GetEffortLogs().get(Integer.parseInt(idLabel.getText()));
+				EffortLog effortLog = selectedProject.getEffortLogs().get(Integer.parseInt(idLabel.getText()));
 				ArrayList<DefectLog> defectLogs = effortLog.getDefectLogs();
 				updateDefectListArea(defectLogs);
 				currentlySelectedLog = effortLog;
