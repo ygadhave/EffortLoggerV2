@@ -30,7 +30,8 @@ public class LogGenerationTestCases {
     @Before
     public void setUp() {
         database = new Database();
-        logs = database.getEffortLogs();
+        // given null argument to fix error, may or may not cause issues
+        logs = database.getEffortLogs(null);
         random = new Random();
     }
 
