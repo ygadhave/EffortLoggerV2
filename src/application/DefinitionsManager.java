@@ -20,6 +20,8 @@ public class DefinitionsManager {
         database.addProject(project);
     }
 
+    // Would probably be good to have a check to make sure the user doesn't delete all projects
+    // At least one is needed at all times
     public void deleteProject(Project project) {
         database.deleteProject(project);
     }

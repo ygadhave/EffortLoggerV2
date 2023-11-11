@@ -15,15 +15,15 @@ public class PlanningPokerManager {
 		database = d;
 	}
 	
-	public ArrayList<EffortLog> GetEffortLogs() {
-		return database.getEffortLogs(database.getProject(0));
+	public ArrayList<Project> getProjects() {
+		return database.getProjects();
 	}
 	
 	// Saves the currently set weight, bias, and selected values of the currently displayed effort log
 	// list to the database.
-	public void saveEffortLogSettings(VBox effortLogsList) {
+	public void saveEffortLogSettings(VBox effortLogsList, Project currentProject) {
 		// Get the currently displayed effort logs list.
-		ArrayList<EffortLog> databaseLogs = GetEffortLogs();
+		ArrayList<EffortLog> databaseLogs = currentProject.getEffortLogs();
 		// Loop through the currently displayed effort logs list.
 		for (int i = 0; i < effortLogsList.getChildren().size(); i++) {
 			// Get the effort log display item.
