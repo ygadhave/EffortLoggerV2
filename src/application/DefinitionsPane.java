@@ -115,7 +115,7 @@ public class DefinitionsPane extends VBox {
     private void addDefinition() {
         // Add a new blank Defined Life Cycle named "New Cycle"
         manager.addDefinition(new Definitions());
-        definitionsTable.refresh();
+        definitionsTable.setItems(manager.getDefinitions());
     }
 
     private void editDefinition() {
@@ -184,7 +184,7 @@ public class DefinitionsPane extends VBox {
             confirmDialog.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.YES) {
                     manager.deleteDefinition(selectedDefinition);
-                    definitionsTable.refresh();
+                    definitionsTable.setItems(manager.getDefinitions());
                 }
             });
         }

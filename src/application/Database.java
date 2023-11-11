@@ -9,16 +9,24 @@ public class Database{
 	
 	// Effort logs list
 	private ArrayList<Project> projects;
-	private Definitions definitions;
+	private ArrayList<Definitions> definitions;
     private int projectCount = 0;
 	
 	public Database() {
 		projects = new ArrayList<Project>();
-		definitions = new Definitions();
+		definitions = new ArrayList<Definitions>();
 	}
 	
 	public ArrayList<Project> getProjects() {
 		return projects;
+	}
+	
+	public ArrayList<Definitions> getDefinitions() {
+		return definitions;
+	}
+	
+	public Definitions getDefinition(int index) {
+		return definitions.get(index);
 	}
 	
 	public Project getProject(int index) {
@@ -31,9 +39,21 @@ public class Database{
 		projects.add(p);
 	}
 	
+	public void addDefinition(Definitions d) {
+		definitions.add(d);
+	}
+	
+	public void deleteDefinition(Definitions d) {
+		definitions.remove(d);
+	}
+	
 	public void deleteProject(Project p) {
         // I wanted to let deleted project #s be reused, but I've decided it's not worth it
 		projects.remove(p);
+	}
+	
+	public void clearDefinitions() {
+		definitions.clear();
 	}
 	
 	public void clearProjects() {

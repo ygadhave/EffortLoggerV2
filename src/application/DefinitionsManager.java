@@ -7,15 +7,13 @@ import javafx.collections.ObservableList;
 
 public class DefinitionsManager {
     private Database database;
-    private ObservableList<Definitions> definitionsList;
 
     public DefinitionsManager(Database d) {
         database = d;
-        definitionsList = FXCollections.observableArrayList();
         
         // create a default definition for example
         Definitions defaultDefinition = new Definitions("Default Cycle", "Plans", "Project Plan");
-        definitionsList.add(defaultDefinition);
+        database.addDefinition(defaultDefinition);
     }
     
     public void addProject(Project project) {
@@ -31,21 +29,21 @@ public class DefinitionsManager {
     }
 
     public ObservableList<Definitions> getDefinitions() {
-        return definitionsList;
+    	return FXCollections.observableArrayList(database.getDefinitions());
     }
 
     public void addDefinition(Definitions definition) {
-        definitionsList.add(definition);
+        database.addDefinition(definition);
     }
 
     public void deleteDefinition(Definitions definition) {
-        definitionsList.remove(definition);
+        database.deleteDefinition(definition);
     }
 
     public void updateDefinition(Definitions oldDefinition, Definitions newDefinition) {
-        int index = definitionsList.indexOf(oldDefinition);
+        int index = database.getDefinitions().indexOf(oldDefinition);
         if (index != -1) {
-            definitionsList.set(index, newDefinition);
+        	database.getDefinitions().set(index, newDefinition);
         }
     }
 }
