@@ -13,17 +13,17 @@ package application;
 	    // Create a new effort log in the database
 	    public boolean CreateNewEffortLog(int hours, int minutes) {
 	        EffortLog newLog = new EffortLog(hours, minutes);
-	        return database.AddLog(newLog);
+	        return database.addLog(newLog, database.getProject(0));
 	    }
 
 	    // Overloaded method call for testing purposes
 	    public boolean CreateNewEffortLog(int hours, int minutes, double weight, int bias) {
 	        EffortLog newLog = new EffortLog(hours, minutes, weight, bias);
-	        return database.AddLog(newLog);
+	        return database.addLog(newLog, database.getProject(0));
 	    }
 
 	    // Clear all effort logs in the database
 	    public void ClearEffortLogs() {
-	        database.ClearEffortLogs();
+	        database.clearEffortLogs(database.getProject(0));
 	    }
 	}

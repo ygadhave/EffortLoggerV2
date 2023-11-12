@@ -11,6 +11,7 @@ public class EffortLog {
 	private int bias;
 	private int storyPoints;
 	private boolean selected;
+	private Definitions cycle;
 	
 	private ArrayList<DefectLog> defectLogs;
 	
@@ -93,6 +94,14 @@ public class EffortLog {
 	
 	public boolean getSelected() {
 		return selected;
+	}
+	
+	public void setCycle(Definitions d) {
+		cycle = d;
+	}
+	
+	public Definitions getCycle() {
+		return cycle;
 	}
 	
 	public ArrayList<DefectLog> getDefectLogs() {
