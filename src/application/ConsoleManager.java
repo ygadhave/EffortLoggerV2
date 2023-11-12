@@ -1,6 +1,6 @@
 package application;
 
-// Console Manager class by Jaylene Nunez
+//ConsolePane class written by Jaylene Nunez
 
     public class ConsoleManager {
         private Database database;
