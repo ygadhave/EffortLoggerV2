@@ -8,7 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-// ConsolePane class written by Jaylene Nunez
+//ConsolePane class written by Jaylene Nunez
 
 public class ConsolePane extends VBox {
 
@@ -25,7 +25,6 @@ public class ConsolePane extends VBox {
     // Constructor
     public ConsolePane(ConsoleManager m) {
         // Initialize manager and UI elements
-
         VBox root = new VBox(10);
         HBox displayBar = new HBox(10);
 
@@ -48,8 +47,6 @@ public class ConsolePane extends VBox {
         }
 
         // Set the selected project in the ConsoleManager
-        //comboBox1.setOnAction(event -> manager.setSelectedProject(comboBox1.getValue()));
-
         ComboBox<String> comboBox2 = new ComboBox<>();
         comboBox2.getItems().addAll("Planning", "Information Gathering", "Information Understanding", "Verifying", "Outlining", "Drafting", "Finalizing", "Team Meeting", "Coach Meeting", "Stakeholder Meeting");
         comboBox2.setPromptText("Select Life Cycle Step");
@@ -103,7 +100,6 @@ public class ConsolePane extends VBox {
 
         VBox layout = new VBox();
         layout.getChildren().addAll(root);
-
         this.getChildren().addAll(layout);
     }
 
