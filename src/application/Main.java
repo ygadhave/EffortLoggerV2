@@ -144,6 +144,16 @@ public class Main extends Application {
 		    Scene mainScene = new Scene(mainContainer, 800, 600);
 		    // ----------------------------------
 		    
+		    // TEMPORARY CODE TO ADD EFFORT LOGS AND DEFECT LOGS FOR TESTING
+		    EffortLog testLog1 = new EffortLog(2, 0, 1, 0);
+		    EffortLog testLog2 = new EffortLog(3, 30, 1, 0);
+		    DefectLog testDefect1 = new DefectLog(2, 0, 1, 0);
+		    DefectLog testDefect2 = new DefectLog(4, 20, 1, 0);
+		    testLog1.addDefectLog(testDefect1);
+		    testLog1.addDefectLog(testDefect2);
+		    database.getProject(0).addLog(testLog1);
+		    database.getProject(0).addLog(testLog2);
+		    
 		    // Show the scene
 			primaryStage.setScene(mainScene);
 			primaryStage.show();
