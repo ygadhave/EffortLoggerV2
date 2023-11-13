@@ -2,80 +2,137 @@ package application;
 
 import java.util.ArrayList;
 
-// Database class written by Donovan Harp and Troy Reiling
+// EffortLog class written by Donovan Harp and Yashwant Gadhave
+public class EffortLog {
+	// Data attributes
+	private int effortHours;
+	private int effortMinutes;
+	private double weight;
+	private int bias;
+	private int storyPoints;
+	private boolean selected;
+	private Definitions cycle;
+	private String startTime;
+    private String stopTime;
+	
+	private ArrayList<DefectLog> defectLogs;
+	
+	// Default Constructor
+	public EffortLog() {
+		effortHours = 0;
+		effortMinutes = 0;
+		weight = 1;
+		bias = 0;
+		storyPoints = -1;
+		selected = true;
+		
+		defectLogs = new ArrayList<DefectLog>();
+	}
+	
+	// Basic Constructor
+	public EffortLog(int hours, int minutes) {
+		effortHours = Math.abs(hours);
+		effortMinutes = Math.abs(minutes);
+		weight = 1;
+		bias = 0;
+		storyPoints = -1;
+		selected = true;
+		
+		defectLogs = new ArrayList<DefectLog>();
+	}
+	
+	// Advanced Constructor
+	public EffortLog(int hours, int minutes, double w, int b) {
+		effortHours = Math.abs(hours);
+		effortMinutes = Math.abs(minutes);
+		weight = w;
+		bias = b;
+		storyPoints = -1;
+		selected = true;
+		
+		defectLogs = new ArrayList<DefectLog>();
+	}
+	
+	public void setTime(int hours, int minutes) {
+		effortHours = hours;
+		effortMinutes = minutes;
+	}
+	
+	public int getHours() {
+		return effortHours;
+	}
+	
+	public int getMinutes() {
+		return effortMinutes;
+	}
+	
+	public void setWeight(double w) {
+		weight = w;
+	}
+	
+	public double getWeight() {
+		return weight;
+	}
+	
+	public void setBias(int b) {
+		bias = b;
+	}
+	
+	public int getBias() {
+		return bias;
+	}
+	
+	public void setStoryPoints(int points) {
+		storyPoints = points;
+	}
+	
+	public int getStoryPoints() {
+		return storyPoints;
+	}
+	
+	public void setSelected(boolean s) {
+		selected = s;
+	}
+	
+	public boolean getSelected() {
+		return selected;
+	}
+	
+	public void setCycle(Definitions d) {
+		cycle = d;
+	}
+	
+	public Definitions getCycle() {
+		return cycle;
+	}
+	
+	public ArrayList<DefectLog> getDefectLogs() {
+		return defectLogs;
+	}
+	
+	public void addDefectLog(DefectLog newLog) {
+		defectLogs.add(newLog);
+	}
+	
+	public void setStartTime(String startTime) {
+        // You may want to perform additional validation here
+        this.startTime = startTime;
+    }
+	
+	// Get start time
+    public String getStartTime() {
+        return startTime;
+    }
 
-public class Database{
-	// TO DO: Add separate project objects with their own effort log lists and project/task data
-	
-	// Effort logs list
-	private ArrayList<Project> projects;
-	private ArrayList<Definitions> definitions;
-    private int projectCount = 0;
-	
-	public Database() {
-		projects = new ArrayList<Project>();
-		definitions = new ArrayList<Definitions>();
-	}
-	
-	public ArrayList<Project> getProjects() {
-		return projects;
-	}
-	
-	public ArrayList<Definitions> getDefinitions() {
-		return definitions;
-	}
-	
-	public Definitions getDefinition(int index) {
-		return definitions.get(index);
-	}
-	
-	public Project getProject(int index) {
-		return projects.get(index);
-	}
-	
-	public void addProject(Project p) {
-        projectCount++;
-        p.setProjectNumber("" + projectCount);
-		projects.add(p);
-	}
-	
-	public void addDefinition(Definitions d) {
-		definitions.add(d);
-	}
-	
-	public void deleteDefinition(Definitions d) {
-		definitions.remove(d);
-	}
-	
-	public void deleteProject(Project p) {
-        // I wanted to let deleted project #s be reused, but I've decided it's not worth it
-		projects.remove(p);
-	}
-	
-	public void clearDefinitions() {
-		definitions.clear();
-	}
-	
-	public void clearProjects() {
-		projects.clear();
-	}
-	
-	public ArrayList<EffortLog> getEffortLogs(Project p) {
-		return p.getEffortLogs();
-	}
-	
-	public void clearEffortLogs(Project p) {
-		p.clearEffortLogs();
-	}
-	
-	public boolean addLog(EffortLog log, Project p) {
-		try {
-			p.addLog(log);
-		}
-		catch(Exception e) {
-			System.out.println(e.getMessage());
-			return false;
-		}
-		return true;
-	}
+    // Set stop time
+    public void setStopTime(String stopTime) {
+        // You may want to perform additional validation here
+        this.stopTime = stopTime;
+    }
+    
+    public String getStopTime() {
+        return stopTime;
+    }
+
+
 }
