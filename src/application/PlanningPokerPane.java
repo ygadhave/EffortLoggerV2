@@ -254,6 +254,11 @@ public class PlanningPokerPane extends VBox {
 				manager.saveEffortLogSettings(effortLogListArea, selectedProject);
 				manager.saveDefectLogSettings(defectLogListArea, currentlySelectedLog);
 			}
+			catch (NumberFormatException exception) {
+				System.out.println("Error: One of the weights or biases is in the incorrect format.");
+				System.out.println(exception.getMessage());
+				errorLabel.setText("Error: One of the weights or biases is in the incorrect format.");
+			}
 			catch (Exception exception) {
 				System.out.println(exception.getMessage());
 			}
