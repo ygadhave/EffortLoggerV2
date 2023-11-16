@@ -49,6 +49,9 @@ public class PlanningPokerPane extends VBox {
 	private Label estimateLabel;
 	private Label errorLabel;
 	
+	// Temporary log generator for testing
+	private Button randomLogButton;
+	
 	// Variable to store which effort log has its defect logs shown
 	private EffortLog currentlySelectedLog;
 	
@@ -95,11 +98,15 @@ public class PlanningPokerPane extends VBox {
 		saveSettingsButton.setOnAction(new SaveSettingsButtonHandler());
 		generateEstimateButton.setOnAction(new GenerateEstimateButtonHandler());
 		
+		randomLogButton = new Button("Generate Random Log (For Testing)");
+		randomLogButton.setOnAction(new RandomLogButtonHandler());
+		
 		// Add the UI elements to the pane
 		this.getChildren().addAll(projectLabel, userStoryNameLabel, userStoryDescriptionLabel, projectInfoButton);
 		this.getChildren().addAll(storyPointsLabel, storyPointsField);
 		this.getChildren().addAll(viewerButtons, effortLogScrollPane, defectLogScrollPane);
 		this.getChildren().addAll(generateEstimateButton, estimateLabel, errorLabel);
+		this.getChildren().add(randomLogButton);
 		
 		// Initialize currentlySelectedLog
 		currentlySelectedLog = null;
@@ -350,6 +357,18 @@ public class PlanningPokerPane extends VBox {
 				ArrayList<DefectLog> defectLogs = effortLog.getDefectLogs();
 				updateDefectListArea(defectLogs);
 				currentlySelectedLog = effortLog;
+			}
+			catch (Exception exception) {
+				System.out.println(exception.getMessage());
+			}
+		}
+	}
+	
+	// Handles clicking the save settings button
+	private class RandomLogButtonHandler implements EventHandler<ActionEvent> {
+		public void handle(ActionEvent event) {
+			try {
+				manager.generateRandomLog(selectedProject);
 			}
 			catch (Exception exception) {
 				System.out.println(exception.getMessage());

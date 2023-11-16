@@ -2,7 +2,7 @@ package application;
 
 import java.util.ArrayList;
 
-// EffortLog class written by Donovan Harp
+// EffortLog class written by Donovan Harp and Yashwant Gadhave
 public class EffortLog {
 	// Data attributes
 	private int effortHours;
@@ -12,6 +12,8 @@ public class EffortLog {
 	private int storyPoints;
 	private boolean selected;
 	private Definitions cycle;
+	private String startTime;
+    private String stopTime;
 	
 	private ArrayList<DefectLog> defectLogs;
 	
@@ -111,4 +113,24 @@ public class EffortLog {
 	public void addDefectLog(DefectLog newLog) {
 		defectLogs.add(newLog);
 	}
+	
+	public void setStartTime(String startTime) {
+        // You may want to perform additional validation here
+        this.startTime = startTime;
+    }
+	
+	// Get start time
+    public String getStartTime() {
+        return startTime;
+    }
+
+    // Set stop time
+    public void setStopTime(String stopTime) {
+        // You may want to perform additional validation here
+        this.stopTime = stopTime;
+    }
+    
+    public String getStopTime() {
+        return stopTime;
+    }
 }

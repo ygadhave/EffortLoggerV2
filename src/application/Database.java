@@ -2,7 +2,7 @@ package application;
 
 import java.util.ArrayList;
 
-// Database class written by Donovan Harp and Troy Reiling
+// Database class written by Donovan Harp and Troy Reiling and Yashwant Gadhave
 
 public class Database{
 	// TO DO: Add separate project objects with their own effort log lists and project/task data
@@ -10,11 +10,13 @@ public class Database{
 	// Effort logs list
 	private ArrayList<Project> projects;
 	private ArrayList<Definitions> definitions;
+	private ArrayList<EffortLog> effortlog;
     private int projectCount = 0;
 	
 	public Database() {
 		projects = new ArrayList<Project>();
 		definitions = new ArrayList<Definitions>();
+		effortlog = new ArrayList<EffortLog>();
 	}
 	
 	public ArrayList<Project> getProjects() {
@@ -45,6 +47,10 @@ public class Database{
 	
 	public void deleteDefinition(Definitions d) {
 		definitions.remove(d);
+	}
+	
+	public void deleteEffortLog(EffortLog e) {
+		effortlog.remove(e);
 	}
 	
 	public void deleteProject(Project p) {

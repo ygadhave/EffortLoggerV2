@@ -1,6 +1,8 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.Random;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.*;
@@ -159,5 +161,23 @@ public class PlanningPokerManager {
 		
 		// Return the average as a floored int
 		return (int)Math.floor(average);
+	}
+	
+	public void generateRandomLog(Project p) {
+		Random rand = new Random();
+		int minutes = rand.nextInt(600);
+		int hours = minutes / 60;
+		minutes = minutes % 60;
+		EffortLog newLog = new EffortLog(hours, minutes);
+		newLog.setCycle(new Definitions("Name", "Category", "Deliverable"));
+		int numDefectLogs = rand.nextInt(10);
+		for (int i = 0; i < numDefectLogs; i++) {
+			minutes = rand.nextInt(600);
+			hours = minutes / 60;
+			minutes = minutes % 60;
+			DefectLog newDefect = new DefectLog(hours, minutes);
+			newLog.addDefectLog(newDefect);
+		}
+		p.addLog(newLog);
 	}
 }
