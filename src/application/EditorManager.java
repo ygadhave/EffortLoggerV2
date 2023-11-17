@@ -41,7 +41,7 @@ public class EditorManager {
         newEntry.setBias(originalEntry.getBias());
         newEntry.setStoryPoints(-1);
         newEntry.setSelected(originalEntry.getSelected());
-        newEntry.setCycle(originalEntry.getCycle());
+        newEntry.setDefinitions(originalEntry.getDefinitions());
 
         return newEntry;
     }

@@ -98,11 +98,11 @@ public class EffortLog {
 		return selected;
 	}
 	
-	public void setCycle(Definitions d) {
+	public void setDefinitions(Definitions d) {
 		cycle = d;
 	}
 	
-	public Definitions getCycle() {
+	public Definitions getDefinitions() {
 		return cycle;
 	}
 	
