@@ -1,154 +1,145 @@
 package application;
 
+import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
-//ConsolePane class written by Jaylene Nunez
-
+//written by Jaylene Nunez
 public class ConsolePane extends VBox {
 
-    // Manager
     private ConsoleManager manager;
-
-    // UI Elements
-    private TextField hoursField;
-    private TextField minutesField;
     private Label resultText;
     private Button startButton;
     private Button stopButton;
 
+    private Timeline timeline;
+    private long startTime;
+    private Label remainingTimeLabel;
+
     // Constructor
     public ConsolePane(ConsoleManager m) {
-        // Initialize manager and UI elements
-        VBox root = new VBox(10);
-        HBox displayBar = new HBox(10);
-
-        Pane spacer = new Pane();
-        spacer.setMinHeight(10);
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        HBox newBar = new HBox(15);
-        newBar.setAlignment(javafx.geometry.Pos.CENTER);
+        timeline = new Timeline(new KeyFrame(Duration.millis(1), this::updateClock));
+        timeline.setCycleCount(Animation.INDEFINITE);
 
         manager = m;
+
         ComboBox<Project> comboBox1 = new ComboBox<>();
         if (manager != null && manager.getDatabase() != null) {
-            
             comboBox1.getItems().addAll(manager.getDatabase().getProjects());
             comboBox1.setPromptText("Select a project");
 
-            // Set the selected project in the ConsoleManager
-            comboBox1.setOnAction(event -> manager.setSelectedProject(comboBox1.getValue()));
+            comboBox1.setOnAction(event -> {
+                manager.setSelectedProject(comboBox1.getValue());
+                startButton.setDisable(manager.getSelectedProject() == null);
+            });
         }
 
-        // Set the selected project in the ConsoleManager
+        Button newProjectButton = new Button("New Project");
+        newProjectButton.setOnAction(event -> createNewProject(comboBox1));
+
+        FlowPane comboBoxPane = new FlowPane();
+        comboBoxPane.setAlignment(javafx.geometry.Pos.CENTER);
+        comboBoxPane.setHgap(10); // Set horizontal gap between nodes
+
         ComboBox<String> comboBox2 = new ComboBox<>();
         comboBox2.getItems().addAll("Planning", "Information Gathering", "Information Understanding", "Verifying", "Outlining", "Drafting", "Finalizing", "Team Meeting", "Coach Meeting", "Stakeholder Meeting");
         comboBox2.setPromptText("Select Life Cycle Step");
 
-        newBar.getChildren().addAll(comboBox1, comboBox2);
-
-        Pane spaces = new Pane();
-        spaces.setMinHeight(10);
-        HBox.setHgrow(spaces, Priority.ALWAYS);
-
-        HBox newBars = new HBox(20);
         ComboBox<String> comboBox3 = new ComboBox<>();
         ComboBox<String> comboBox4 = new ComboBox<>();
-        newBars.setAlignment(javafx.geometry.Pos.CENTER);
-        comboBox3.getItems().addAll("Plans", "Deliverables", "Interruptions", "Defects", "");
+        comboBox3.getItems().addAll("Plans", "Deliverables", "Interruptions", "Defects");
         comboBox3.setPromptText("Select Effort Category");
         comboBox4.getItems().addAll("Project Plan", "Conceptual Design Plan", "Detailed Design Plan", "Implementation Plan");
         comboBox4.setPromptText("Select Plan");
-        newBars.getChildren().addAll(comboBox3, comboBox4);
 
-        Pane spacious = new Pane();
-        spacious.setMinHeight(10);
-        HBox.setHgrow(spacious, Priority.ALWAYS);
+        comboBoxPane.getChildren().addAll(comboBox2, comboBox3, comboBox4);
 
-        // ToolBar
         HBox toolBar = new HBox(25);
+        toolBar.setSpacing(10); // Set spacing between elements
         startButton = new Button("Start");
         startButton.setStyle("-fx-background-color: green;");
         stopButton = new Button("Stop");
         stopButton.setStyle("-fx-background-color: red;");
         toolBar.setAlignment(javafx.geometry.Pos.CENTER);
 
+        remainingTimeLabel = new Label("Clock: 00:00");
+        remainingTimeLabel.setStyle("-fx-font-size: 20px;");
+
+        resultText = new Label("");
+
+        startButton.setDisable(true); // Disable the "Start" button initially
+
+        startButton.setOnAction(new StartButtonHandler());
+        stopButton.setOnAction(new StopButtonHandler());
+
         Pane space = new Pane();
         space.setMinHeight(20);
         HBox.setHgrow(space, Priority.ALWAYS);
-     
 
-        hoursField = new TextField();
-        minutesField = new TextField();
-        resultText = new Label("");
-
-        // Bind Buttons
-        startButton.setOnAction(new StartButtonHandler(resultText));
-        stopButton.setOnAction(new StopButtonHandler(resultText));
-
-        // Add UI elements to pane
-        toolBar.getChildren().addAll(startButton, stopButton);
-        this.getChildren().addAll(resultText, space, toolBar);
+        toolBar.getChildren().addAll(comboBox1, newProjectButton, startButton, stopButton);
+        this.getChildren().addAll(resultText, remainingTimeLabel, toolBar, comboBoxPane);
         this.setAlignment(javafx.geometry.Pos.CENTER);
-        root.getChildren().addAll(displayBar, spacer, newBar, spaces, newBars, spacious, toolBar, space);
-
-        VBox layout = new VBox();
-        layout.getChildren().addAll(root);
-        this.getChildren().addAll(layout);
     }
 
+    // Start button handler
     private class StartButtonHandler implements EventHandler<ActionEvent> {
-        private Label label;
-
-        public StartButtonHandler(Label label) {
-            this.label = label;
-        }
-
         @Override
         public void handle(ActionEvent event) {
-            try {
-                // Check if a project is selected
-                if (manager.getSelectedProject() != null) {
-                    int hours = Integer.parseInt(hoursField.getText());
-                    int minutes = Integer.parseInt(minutesField.getText());
-
-                    // Call CreateNewEffortLog in ConsoleManager
-                    boolean success = manager.CreateNewEffortLog(hours, minutes);
-                    if (success) {
-                        label.setText("Effort log created successfully.");
-                        label.setStyle("-fx-font-size: 20px; -fx-background-color: green;");
-                    } else {
-                        label.setText("Failed to create effort log.");
-                        label.setStyle("-fx-font-size: 20px; -fx-background-color: red;");
-                    }
-                } else {
-                    label.setText("Please select a project first.");
-                    label.setStyle("-fx-font-size: 20px; -fx-background-color: red;");
-                }
-            } catch (NumberFormatException e) {
-                label.setText("Clock is running");
-                label.setStyle("-fx-font-size: 20px; -fx-background-color: green;");
+            if (manager.getSelectedProject() != null && !timeline.getStatus().equals(Animation.Status.RUNNING)) {
+                startTime = System.currentTimeMillis();
+                timeline.playFromStart();
+                resultText.setText("Clock started.");
+                resultText.setStyle("-fx-font-size: 20px; -fx-background-color: green;");
+            } else {
+                resultText.setText("Cannot start the clock without a selected project or clock is already running.");
+                resultText.setStyle("-fx-font-size: 20px; -fx-background-color: red;");
             }
         }
     }
 
+    // Stop button handler
     private class StopButtonHandler implements EventHandler<ActionEvent> {
-        private Label label1;
-
-        public StopButtonHandler(Label label) {
-            this.label1 = label;
-        }
-
         @Override
         public void handle(ActionEvent event) {
-            label1.setText("Clock is stopped");
-            label1.setStyle("-fx-font-size: 20px; -fx-background-color: red;");
+            if (timeline.getStatus().equals(Animation.Status.RUNNING)) {
+                timeline.stop();
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                long seconds = (elapsedTime / 1000) % 60;
+                long milliseconds = elapsedTime % 1000;
+
+                remainingTimeLabel.setText(String.format("Elapsed Time: %02d:%03d", seconds, milliseconds));
+                resultText.setText("Clock stopped.");
+                resultText.setStyle("-fx-font-size: 20px; -fx-background-color: red;");
+            } else {
+                resultText.setText("Clock is not running.");
+                resultText.setStyle("-fx-font-size: 20px; -fx-background-color: red;");
+            }
         }
+    }
+
+    // Create new project
+    private void createNewProject(ComboBox<Project> comboBox1) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("New Project");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Enter the name of the new project:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(projectName -> {
+            // Create a new project and add it to the ComboBox
+            Project newProject = new Project(projectName);
+            manager.getDatabase().addProject(newProject);
+            comboBox1.getItems().add(newProject);
+        });
+    }
+
+    private void updateClock(ActionEvent event) {
+        // Update the clock if needed
     }
 }
