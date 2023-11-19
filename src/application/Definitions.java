@@ -1,6 +1,6 @@
 package application;
 
-// made by Troy Reiling
+// Definitions class written by Troy Reiling
 
 public class Definitions {
     private String cycleName;

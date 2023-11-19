@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 
+//PlanningPokerProjectInfoWindow class written by Donovan Harp
+
 public class PlanningPokerProjectInfoWindow extends VBox {
 
 	// References

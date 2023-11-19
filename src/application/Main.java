@@ -1,5 +1,7 @@
 package application;
 	
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -44,8 +46,8 @@ public class Main extends Application {
 	private PlanningPokerManager planningPokerManager;
 	
 	// User Interface Tab
-	private Tab userInterfacePrototypeTab;
-	private UserInterfacePrototype userInterfacePrototype;
+	// private Tab userInterfacePrototypeTab;
+	// private UserInterfacePrototype userInterfacePrototype;
 	
 	// Onboarding Tab
 	private Button onboardingButton;
@@ -53,8 +55,8 @@ public class Main extends Application {
 	
 	// ----------Troy's Code----------
 	// Authentication Tab
-	private Tab authenticationTab;
-	private AuthenticationPane authenticationPane;
+	// private Tab authenticationTab;
+	// private AuthenticationPane authenticationPane;
 	// -------------------------------
 	
 	@Override
@@ -109,22 +111,38 @@ public class Main extends Application {
 			planningPokerTab.setContent(planningPokerPane);
 			
 			// Setup Jaylene's prototype
-			userInterfacePrototypeTab = new Tab("UI Prototype");
-			userInterfacePrototype = new UserInterfacePrototype();
-			userInterfacePrototypeTab.setContent(userInterfacePrototype);
+			// userInterfacePrototypeTab = new Tab("UI Prototype");
+			// userInterfacePrototype = new UserInterfacePrototype();
+			// userInterfacePrototypeTab.setContent(userInterfacePrototype);
 			
 			// ----------Troy's Code----------
 			// Setup authentication tab
-			authenticationTab = new Tab("Authentication");
-			authenticationPane = new AuthenticationPane();
-			authenticationTab.setContent(authenticationPane);
+			// authenticationTab = new Tab("Authentication");
+			// authenticationPane = new AuthenticationPane();
+			// authenticationTab.setContent(authenticationPane);
 			// -------------------------------
 			
 			// Add tabs
 			root.getTabs().addAll(consoleTab, editorTab, defectTab);
 			root.getTabs().addAll(logsTab, definitionsTab, planningPokerTab);
 			// Temporary tabs from original mainline prototype
-			root.getTabs().addAll(userInterfacePrototypeTab, authenticationTab);
+			// root.getTabs().addAll(userInterfacePrototypeTab, authenticationTab);
+			
+			// Check if the user enters or exits the Planning Poker Tab
+			root.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+			    // If the user is entering the Planning Poker Tab, refresh the effort log list
+				if ((int)newValue == 5) {
+					ArrayList<EffortLog> currentLogList = planningPokerPane.getSelectedProject().getEffortLogs();
+					planningPokerPane.updateEffortListArea(currentLogList);
+					planningPokerPane.setSelectedLog(null);
+					planningPokerPane.clearDefectListArea();
+				}
+				
+				// If the user is leaving the Planning Poker Tab, save the current weight and bias settings
+				if ((int)oldValue == 5) {
+					planningPokerPane.saveSettings();
+				}
+			});
 			
 			// Setup the main scene
 			Scene scene = new Scene(root,400,400);

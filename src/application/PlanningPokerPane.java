@@ -18,6 +18,9 @@ public class PlanningPokerPane extends VBox {
 	// Project Info Window
 	Stage infoStage;
 	
+	// Variable to store which effort log has its defect logs shown
+	private EffortLog currentlySelectedLog;
+	
 	// Header Elements
 	private Project selectedProject;
 	private String selectedProjectName;
@@ -51,9 +54,6 @@ public class PlanningPokerPane extends VBox {
 	
 	// Temporary log generator for testing
 	private Button randomLogButton;
-	
-	// Variable to store which effort log has its defect logs shown
-	private EffortLog currentlySelectedLog;
 	
 	// Constructor
 	public PlanningPokerPane(PlanningPokerManager m) {
@@ -112,10 +112,37 @@ public class PlanningPokerPane extends VBox {
 		currentlySelectedLog = null;
 	}
 	
+	public void setSelectedProject(Project p) {
+		selectedProject = p;
+	}
+	
+	public Project getSelectedProject() {
+		return selectedProject;
+	}
+	
+	public void setSelectedLog(EffortLog log) {
+		currentlySelectedLog = log;
+	}
+	
+	public EffortLog getSelectedLog() {
+		return currentlySelectedLog;
+	}
+	
 	public void openProjectInfoWindow() {
 		// Create the project info window
 		PlanningPokerProjectInfoWindow projectInfoWindow = new PlanningPokerProjectInfoWindow(this, manager, selectedProject);
 		Scene mainScene = new Scene(projectInfoWindow, 800, 600);
+		
+		// Show the project info window
+		infoStage = new Stage();
+		infoStage.setScene(mainScene);
+		infoStage.show();
+	}
+	
+	public void openLogInfoWindow(EffortLog log) {
+		// Create the effort log info window
+		PlanningPokerEffortLogInfoWindow logInfoWindow = new PlanningPokerEffortLogInfoWindow(this, manager, log);
+		Scene mainScene = new Scene(logInfoWindow, 200, 100);
 		
 		// Show the project info window
 		infoStage = new Stage();
@@ -174,11 +201,16 @@ public class PlanningPokerPane extends VBox {
 			selectBox.setSelected(selected);
 			Button defectViewButton = new Button("View Defect Logs");
 			defectViewButton.setOnAction(new DefectViewButtonHandler());
+			Button logInfoButton = new Button("View Info");
+			logInfoButton.setOnAction(new LogInfoButtonHandler());
 			
 			effortLogDisplay.setSpacing(5);
 			
 			// Add the elements to the log's display and add the display to the list
-			effortLogDisplay.getChildren().addAll(id, hoursTitle, hoursNumber, minutesTitle, minutesNumber, weightField, biasField, selectBox, defectViewButton);
+			effortLogDisplay.getChildren().addAll(id, hoursTitle, hoursNumber, minutesTitle, minutesNumber, weightField, biasField, selectBox, defectViewButton, logInfoButton);
+			
+			// Format the effort log display element
+			effortLogDisplay.setSpacing(10);
 			
 			effortLogListArea.getChildren().add(effortLogDisplay);		
 		}
@@ -187,7 +219,7 @@ public class PlanningPokerPane extends VBox {
 	// Updates the displayed defect log list for a certain effort log
 	public void updateDefectListArea(ArrayList<DefectLog> newLogList) {
 		// Clear the current display
-		defectLogListArea.getChildren().clear();
+		clearDefectListArea();
 		
 		// If the current list of defect logs is zero, do nothing
 		if (newLogList.size() < 1) {
@@ -220,7 +252,31 @@ public class PlanningPokerPane extends VBox {
 			// Add the elements to the log's display and add the display to the list
 			defectLogDisplay.getChildren().addAll(id, hoursTitle, hoursNumber, minutesTitle, minutesNumber, weightField, biasField, selectBox);
 			
+			// Format the defect log display element
+			defectLogDisplay.setSpacing(10);
+			
 			defectLogListArea.getChildren().add(defectLogDisplay);		
+		}
+	}
+	
+	// Clears the currently displayed defect list (DOES NOT SAVE!!!)
+	public void clearDefectListArea() {
+		// Clear the current display
+		defectLogListArea.getChildren().clear();
+	}
+	
+	public void saveSettings() {
+		try {
+			manager.saveEffortLogSettings(effortLogListArea, selectedProject);
+			manager.saveDefectLogSettings(defectLogListArea, currentlySelectedLog);
+		}
+		catch (NumberFormatException exception) {
+			System.out.println("Error: One of the weights or biases is in the incorrect format.");
+			System.out.println(exception.getMessage());
+			errorLabel.setText("Error: One of the weights or biases is in the incorrect format.");
+		}
+		catch (Exception exception) {
+			System.out.println(exception.getMessage());
 		}
 	}
 	
@@ -247,6 +303,9 @@ public class PlanningPokerPane extends VBox {
 					ArrayList<DefectLog> newDefectLogList = currentlySelectedLog.getDefectLogs();
 					updateDefectListArea(newDefectLogList);
 				}
+				else {
+					clearDefectListArea();
+				}
 			}
 			catch (Exception exception) {
 				System.out.println(exception.getMessage());
@@ -257,18 +316,7 @@ public class PlanningPokerPane extends VBox {
 	// Handles clicking the save settings button
 	private class SaveSettingsButtonHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
-			try {
-				manager.saveEffortLogSettings(effortLogListArea, selectedProject);
-				manager.saveDefectLogSettings(defectLogListArea, currentlySelectedLog);
-			}
-			catch (NumberFormatException exception) {
-				System.out.println("Error: One of the weights or biases is in the incorrect format.");
-				System.out.println(exception.getMessage());
-				errorLabel.setText("Error: One of the weights or biases is in the incorrect format.");
-			}
-			catch (Exception exception) {
-				System.out.println(exception.getMessage());
-			}
+			saveSettings();
 		}
 	}
 	
@@ -357,6 +405,25 @@ public class PlanningPokerPane extends VBox {
 				ArrayList<DefectLog> defectLogs = effortLog.getDefectLogs();
 				updateDefectListArea(defectLogs);
 				currentlySelectedLog = effortLog;
+			}
+			catch (Exception exception) {
+				System.out.println(exception.getMessage());
+			}
+		}
+	}
+	
+	// Handles clicking the save settings button
+	private class LogInfoButtonHandler implements EventHandler<ActionEvent> {
+		public void handle(ActionEvent event) {
+			try {
+				// Get the effort log associated with this list element
+				Button sourceButton = (Button)event.getSource();
+				HBox listItem = (HBox)sourceButton.getParent();
+				Label idLabel = (Label)listItem.getChildren().get(0);
+				EffortLog effortLog = selectedProject.getEffortLogs().get(Integer.parseInt(idLabel.getText()));
+				
+				// Open the info window
+				openLogInfoWindow(effortLog);
 			}
 			catch (Exception exception) {
 				System.out.println(exception.getMessage());

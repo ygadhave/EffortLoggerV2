@@ -23,9 +23,25 @@ public class PlanningPokerManager {
 	
 	// Saves the currently set weight, bias, and selected values of the currently displayed effort log
 	// list to the database.
+	// TODO: Currently does not show an error if the list sizes are different. Might be a good idea
+	//       to look into adding that.
 	public void saveEffortLogSettings(VBox effortLogsList, Project currentProject) {
+		// Check if the defect log display has any defect logs displayed.
+		if (effortLogsList.getChildren().size() < 1) {
+			System.out.println("Error: Effort log display is empty.");
+			return;
+		}
+		
 		// Get the currently displayed effort logs list.
 		ArrayList<EffortLog> databaseLogs = currentProject.getEffortLogs();
+		
+		// Check if the currently selected log has the same number of defect logs as the
+		// currently displayed defect log list.
+		if (effortLogsList.getChildren().size() != databaseLogs.size()) {
+			System.out.println("Error: Effort log list in database is not same size as the displayed list.");
+			return;
+		}
+		
 		// Loop through the currently displayed effort logs list.
 		for (int i = 0; i < effortLogsList.getChildren().size(); i++) {
 			// Get the effort log display item.
@@ -53,53 +69,53 @@ public class PlanningPokerManager {
 
 	// Saves the currently set weight, bias, and selected values of the currently displayed defect log
 	// list to the database.
+	// TODO: Currently does not show an error if the list sizes are different. Might be a good idea
+	//       to look into adding that.
 	public void saveDefectLogSettings(VBox defectLogsList, EffortLog currentlySelectedLog) {
 		// Check if an effort log has had its defect logs displayed.
-		if (currentlySelectedLog != null) {
-			// Check if the defect log display has any defect logs displayed.
-			if (defectLogsList.getChildren().size() > 0) {
-				// Get the defect logs from the currently selected log.
-				ArrayList<DefectLog> defectLogs = currentlySelectedLog.getDefectLogs();
-				// Check if the currently selected log has the same number of defect logs as the
-				// currently displayed defect log list.
-				if (defectLogsList.getChildren().size() == defectLogs.size()) {
-					// Loop through each element of the displayed defect logs list.
-					for (int j = 0; j < defectLogsList.getChildren().size(); j++) {
-						// Get the defect log display item.
-						HBox defectItem = (HBox)defectLogsList.getChildren().get(j);
-						
-						// Get the relevant components of the display item.
-						Label idLabelD = (Label)defectItem.getChildren().get(0);
-						TextField weightFieldD = (TextField)defectItem.getChildren().get(5);
-						TextField biasFieldD = (TextField)defectItem.getChildren().get(6);
-						CheckBox selectedBoxD = (CheckBox)defectItem.getChildren().get(7);
-						
-						// Get the needed values from the components.
-						int idD = Integer.parseInt(idLabelD.getText());
-						double weightD = Double.parseDouble(weightFieldD.getText());
-						int biasD = Integer.parseInt(biasFieldD.getText());
-						boolean selectedD = selectedBoxD.isSelected();
-						
-						// Update the corresponding defect log with these values.
-						DefectLog logToUpdateD = defectLogs.get(idD);
-						logToUpdateD.setWeight(weightD);
-						logToUpdateD.setBias(biasD);
-						logToUpdateD.setSelected(selectedD);
-					}
-				}
-				else {
-					System.out.println("Error: Defect log list is not same size as display.");
-					return;
-				}
-			}
-			else {
-				System.out.println("Error: Defect log display is empty.");
-				return;
-			}
-		}
-		else {
+		if (currentlySelectedLog == null) {
 			System.out.println("Warning: No defect log list shown.");
 			return;
+		}
+		
+		// Check if the defect log display has any defect logs displayed.
+		if (defectLogsList.getChildren().size() < 1) {
+			System.out.println("Error: Defect log display is empty.");
+			return;
+		}
+
+		// Get the defect logs from the currently selected log.
+		ArrayList<DefectLog> defectLogs = currentlySelectedLog.getDefectLogs();
+		
+		// Check if the currently selected log has the same number of defect logs as the
+		// currently displayed defect log list.
+		if (defectLogsList.getChildren().size() != defectLogs.size()) {
+			System.out.println("Error: Defect log list in database is not same size as the displayed list.");
+			return;
+		}
+		
+		// Loop through each element of the displayed defect logs list.
+		for (int j = 0; j < defectLogsList.getChildren().size(); j++) {
+			// Get the defect log display item.
+			HBox defectItem = (HBox)defectLogsList.getChildren().get(j);
+			
+			// Get the relevant components of the display item.
+			Label idLabelD = (Label)defectItem.getChildren().get(0);
+			TextField weightFieldD = (TextField)defectItem.getChildren().get(5);
+			TextField biasFieldD = (TextField)defectItem.getChildren().get(6);
+			CheckBox selectedBoxD = (CheckBox)defectItem.getChildren().get(7);
+			
+			// Get the needed values from the components.
+			int idD = Integer.parseInt(idLabelD.getText());
+			double weightD = Double.parseDouble(weightFieldD.getText());
+			int biasD = Integer.parseInt(biasFieldD.getText());
+			boolean selectedD = selectedBoxD.isSelected();
+			
+			// Update the corresponding defect log with these values.
+			DefectLog logToUpdateD = defectLogs.get(idD);
+			logToUpdateD.setWeight(weightD);
+			logToUpdateD.setBias(biasD);
+			logToUpdateD.setSelected(selectedD);
 		}
 	}
 	
@@ -163,13 +179,23 @@ public class PlanningPokerManager {
 		return (int)Math.floor(average);
 	}
 	
+	// Generates a random effort log with random defect logs for testing
 	public void generateRandomLog(Project p) {
+		// Initialize the random number generator
 		Random rand = new Random();
+		
+		// Get random minutes and hours
 		int minutes = rand.nextInt(600);
 		int hours = minutes / 60;
 		minutes = minutes % 60;
+		
+		// Create a new effort log
 		EffortLog newLog = new EffortLog(hours, minutes);
-		newLog.setCycle(new Definitions("Name", "Category", "Deliverable"));
+		
+		// Set placeholder definitions
+		newLog.setDefinitions(new Definitions("Name", "Category", "Deliverable"));
+		
+		// Create a list of random defect logs
 		int numDefectLogs = rand.nextInt(10);
 		for (int i = 0; i < numDefectLogs; i++) {
 			minutes = rand.nextInt(600);
@@ -178,6 +204,8 @@ public class PlanningPokerManager {
 			DefectLog newDefect = new DefectLog(hours, minutes);
 			newLog.addDefectLog(newDefect);
 		}
+		
+		// Add the new log to the database
 		p.addLog(newLog);
 	}
 }
