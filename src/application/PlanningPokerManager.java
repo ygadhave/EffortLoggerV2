@@ -37,7 +37,7 @@ public class PlanningPokerManager {
 		
 		// Check if the currently selected log has the same number of defect logs as the
 		// currently displayed defect log list.
-		if (effortLogsList.getChildren().size() == databaseLogs.size()) {
+		if (effortLogsList.getChildren().size() != databaseLogs.size()) {
 			System.out.println("Error: Effort log list in database is not same size as the displayed list.");
 			return;
 		}
@@ -89,7 +89,7 @@ public class PlanningPokerManager {
 		
 		// Check if the currently selected log has the same number of defect logs as the
 		// currently displayed defect log list.
-		if (defectLogsList.getChildren().size() == defectLogs.size()) {
+		if (defectLogsList.getChildren().size() != defectLogs.size()) {
 			System.out.println("Error: Defect log list in database is not same size as the displayed list.");
 			return;
 		}
