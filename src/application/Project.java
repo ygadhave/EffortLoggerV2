@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//Partially written by Troy Reiling
+
 public class Project {
 	private String projectName;
     private String projectNumber;
