@@ -7,7 +7,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-//User Orientation Prototype by Yashwant Gadhave
 public class OnboardingPrototype extends Application {
 
     private int currentStep = 1;
@@ -227,7 +226,7 @@ public class OnboardingPrototype extends Application {
 
     private void showWelcomeStep(VBox root) {
         Label welcomeLabel = new Label("Welcome, " + username + "!");
-        Label completedTasksLabel = new Label(username + ", successfully completed all the tasks and ready to get started:");
+        Label completedTasksLabel = new Label(username + ", successfully completed all the tasks and is ready to get started:");
 
         Label task1Label = new Label("Task 1: Creating Username and Password");
         Label task2Label = new Label("Task 2: Create Project");
@@ -256,8 +255,8 @@ public class OnboardingPrototype extends Application {
         });
 
         root.getChildren().addAll(
-                welcomeLabel, completedTasksLabel, task1Label, task2Label, projectInfoLabel, 
-                task3Label, storyPointsLabel, startLabel, startButton);
+                welcomeLabel, completedTasksLabel, task1Label, task2Label, task3Label, projectInfoLabel, 
+                storyPointsLabel, startLabel, startButton);
     }
 
     
