@@ -76,6 +76,7 @@ public class Main extends Application {
     private static Main instance; // Singleton instance
 	// -------------------------------
 	
+    // for singleton
     public Main() {
     	instance = this;
     }
