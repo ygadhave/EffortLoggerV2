@@ -28,6 +28,7 @@ can be used to check if someone has the privilege to do something.
 */
 
 public class AuthenticationPane extends VBox {
+	private AuthenticationManager manager;
     private ObservableList<Account> accounts = FXCollections.observableArrayList();
     private Account loggedInAccount = null;
     private Button btnRegister = new Button("Register");
@@ -37,7 +38,8 @@ public class AuthenticationPane extends VBox {
     private Timer timer = new Timer(true);
     private Label lblAccountInfo = new Label("");
 
-    public AuthenticationPane() {
+    public AuthenticationPane(AuthenticationManager m) {
+    	manager = m;
         initializeUI();
     }
 

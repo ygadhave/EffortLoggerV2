@@ -55,6 +55,7 @@ public class Main extends Application {
 	// Authentication Tab
 	private Tab authenticationTab;
 	private AuthenticationPane authenticationPane;
+	private AuthenticationManager authenticationManager;
 	// -------------------------------
 	
 	@Override
@@ -116,7 +117,8 @@ public class Main extends Application {
 			// ----------Troy's Code----------
 			// Setup authentication tab
 			authenticationTab = new Tab("Authentication");
-			authenticationPane = new AuthenticationPane();
+			authenticationManager = new AuthenticationManager(database);
+			authenticationPane = new AuthenticationPane(authenticationManager);
 			authenticationTab.setContent(authenticationPane);
 			// -------------------------------
 			
