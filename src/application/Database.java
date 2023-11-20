@@ -1,6 +1,8 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 // Database class written by Donovan Harp and Troy Reiling
 
@@ -11,6 +13,8 @@ public class Database{
 	private ArrayList<Project> projects;
 	private ArrayList<Definitions> definitions;
     private int projectCount = 0;
+    private Map<String, Account> accounts = new HashMap<>();
+    private AtomicInteger accountIdCounter = new AtomicInteger(0);
 	
 	public Database() {
 		projects = new ArrayList<Project>();
@@ -78,4 +82,20 @@ public class Database{
 		}
 		return true;
 	}
+	
+    public boolean saveAccount(Account account) {
+        if (accounts.containsKey(account.getUsername())) {
+            return false; // Username already exists
+        }
+        accounts.put(account.getUsername(), account);
+        return true;
+    }
+
+    public Optional<Account> getAccount(String username) {
+        return Optional.ofNullable(accounts.get(username));
+    }
+
+    public int getNextAccountId() {
+        return accountIdCounter.incrementAndGet();
+    }
 }

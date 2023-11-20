@@ -1,10 +1,17 @@
 package application;
 	
+import java.util.Timer;
+
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 // Main class written by Donovan Harp, Yashwhat Gadhave, and Troy Reiling
 
@@ -56,12 +63,18 @@ public class Main extends Application {
 	private Tab authenticationTab;
 	private AuthenticationPane authenticationPane;
 	private AuthenticationManager authenticationManager;
+	
+    // Declare root as a class-level field
+    private TabPane root;
+	
+    // AFK Timer for the entire application
+    private static Timer afkTimer;
 	// -------------------------------
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			TabPane root = new TabPane();
+			root = new TabPane();
 			
 			// Initialize the database
 			database = new Database();
@@ -114,19 +127,19 @@ public class Main extends Application {
 			userInterfacePrototype = new UserInterfacePrototype();
 			userInterfacePrototypeTab.setContent(userInterfacePrototype);
 			
-			// ----------Troy's Code----------
-			// Setup authentication tab
-			authenticationTab = new Tab("Authentication");
-			authenticationManager = new AuthenticationManager(database);
-			authenticationPane = new AuthenticationPane(authenticationManager);
-			authenticationTab.setContent(authenticationPane);
-			// -------------------------------
-			
-			// Add tabs
-			root.getTabs().addAll(consoleTab, editorTab, defectTab);
-			root.getTabs().addAll(logsTab, definitionsTab, planningPokerTab);
-			// Temporary tabs from original mainline prototype
-			root.getTabs().addAll(userInterfacePrototypeTab, authenticationTab);
+            // Setup authentication tab
+            authenticationTab = new Tab("Authentication");
+            authenticationManager = new AuthenticationManager(database);
+            authenticationPane = new AuthenticationPane(authenticationManager, this::updateTabVisibility);
+            authenticationTab.setContent(authenticationPane);
+            
+            authenticationPane.setLogoutHandler(() -> {
+                logoutUser();
+                showLogoutAlert();
+            });
+
+            // Add tabs
+            root.getTabs().addAll(authenticationTab); // Initially, only the authentication tab is visible
 			
 			// Setup the main scene
 			Scene scene = new Scene(root,400,400);
@@ -146,15 +159,77 @@ public class Main extends Application {
 		    Scene mainScene = new Scene(mainContainer, 800, 600);
 		    // ----------------------------------
 		    
-		    // Show the scene
-			primaryStage.setScene(mainScene);
-			primaryStage.show();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
+            // Setup the AFK Timer
+            setupAfkTimer();
+
+            // Show the scene
+            primaryStage.setScene(mainScene);
+            primaryStage.show();
+           
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 	
-	public static void main(String[] args) {
-		launch(args);
-	}
+    private void setupAfkTimer() {
+        if (afkTimer != null) {
+            afkTimer.cancel();
+        }
+        afkTimer = new Timer(true);
+        afkTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    logoutUser();
+                    showLogoutAlert();
+                });
+            }
+        }, 5 * 60 * 1000); // 5 minutes
+    }
+
+    private void logoutUser() {
+        // Logic to handle user logout
+        authenticationPane.logout();
+        // Reset the timer to null or cancel it
+        if (afkTimer != null) {
+            afkTimer.cancel();
+        }
+    }
+
+    private void showLogoutAlert() {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Logged Out");
+        alert.setHeaderText("Automatic Logout");
+        alert.setContentText("You have been logged out due to inactivity.");
+        alert.showAndWait();
+    }
+
+    public void resetAfkTimer() {
+        setupAfkTimer();
+    }
+    
+    public static void stopAfkTimer() {
+       afkTimer.cancel();
+    }
+
+    // Method to update tab visibility based on user status
+    public void updateTabVisibility(Account account) {
+        root.getTabs().clear();
+        root.getTabs().add(authenticationTab);
+
+        if (account != null) {
+            int privilege = account.getPrivilege();
+            if (privilege == 0) {
+                root.getTabs().add(planningPokerTab);
+            } else if (privilege == 1 || privilege == 2) {
+                root.getTabs().addAll(consoleTab, editorTab, defectTab, logsTab, definitionsTab, planningPokerTab, userInterfacePrototypeTab);
+            }
+        }
+
+        resetAfkTimer();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
