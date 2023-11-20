@@ -7,12 +7,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.control.ComboBox;
 
 public class AuthenticationPane extends VBox {
     private AuthenticationManager manager;
@@ -24,6 +26,8 @@ public class AuthenticationPane extends VBox {
     private Label lblAccountInfo = new Label("");
     private Consumer<Account> visibilityUpdater;
     private Runnable logoutHandler;
+    // Modified to flag when a logout is in progress to prevent recursive calls
+    private boolean isLoggingOut = false;
 
     public AuthenticationPane(AuthenticationManager manager, Consumer<Account> visibilityUpdater) {
         this.manager = manager;
@@ -45,19 +49,38 @@ public class AuthenticationPane extends VBox {
     private void register() {
         Stage registerStage = new Stage();
         registerStage.initModality(Modality.APPLICATION_MODAL);
-        VBox layout = new VBox(10);
+        VBox layout = new VBox(5);
         layout.setAlignment(Pos.CENTER);
         TextField usernameField = new TextField();
         PasswordField passwordField = new PasswordField();
+        ComboBox<String> privilegeComboBox = new ComboBox<>();
+        privilegeComboBox.getItems().addAll("Guest","Worker","Admin");
+        privilegeComboBox.setValue("Guest"); // default value
         Button btnSubmit = new Button("Register");
-        layout.getChildren().addAll(new Label("Username:"), usernameField, new Label("Password:"), passwordField, btnSubmit);
+        layout.getChildren().addAll(new Label("Username:"), usernameField, new Label("Password:"), passwordField, new Label("Privilege:"), privilegeComboBox, btnSubmit);
         registerStage.setScene(new Scene(layout, 300, 200));
 
         btnSubmit.setOnAction(e -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
+            String privilegeText = privilegeComboBox.getValue().trim();
+            int privilege;
+            switch (privilegeText) {
+            case "Guest":
+            	privilege = 0;
+            	break;
+            case "Worker":
+            	privilege = 1;
+            	break;
+            case "Admin":
+            	privilege = 2;
+            	break;
+            default:
+            	privilege = 0; // default if it goes wrong
+            	System.out.println(privilegeText);
+            }
 
-            boolean registrationSuccessful = manager.registerAccount(username, password);
+            boolean registrationSuccessful = manager.registerAccount(username, password, privilege);
 
             if (registrationSuccessful) {
                 // Notify the user of successful registration
@@ -123,11 +146,8 @@ public class AuthenticationPane extends VBox {
     // This method only performs the logout logic without triggering the handler
     public void performLogout() {
         loggedInAccount = null;
-        // Remove the layout intended for logged in users
         getChildren().clear();
-        // Add the layout intended for logged out users
         getChildren().addAll(btnRegister, btnLogin);
-        // Cancel the AFK timer
         Main.stopAfkTimer();
         visibilityUpdater.accept(null); // Update tab visibility for logout
     }
@@ -135,11 +155,12 @@ public class AuthenticationPane extends VBox {
     // This method is called externally and triggers the logout handler
     public void logout() {
         performLogout(); // Perform actual logout
-        if (logoutHandler != null) {
-            logoutHandler.run(); // Trigger additional actions
-        }
     }
 
+    public boolean isLoggedIn() {
+        return loggedInAccount != null;
+    }
+    
  // Test how account privilege works
     private void test() {
         String message;
@@ -167,5 +188,7 @@ public class AuthenticationPane extends VBox {
         alert.setHeaderText("Test Result");
         alert.setContentText(message);
         alert.showAndWait();
+        
+        Main.getInstance().resetAfkTimer();
     }
 }

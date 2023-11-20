@@ -10,11 +10,11 @@ public class AuthenticationManager {
 		database = d;
 	}
 
-    public boolean registerAccount(String username, String password) {
+    public boolean registerAccount(String username, String password, int privilege) {
         // Here you would typically hash the password
         String hashedPassword = hashPassword(password);
 
-        Account newAccount = new Account(database.getNextAccountId(), username, hashedPassword, 1); // Defaulting privilege to 1 (Worker)
+        Account newAccount = new Account(database.getNextAccountId(), username, hashedPassword, privilege);
         return database.saveAccount(newAccount);
     }
 

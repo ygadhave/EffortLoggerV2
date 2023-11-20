@@ -69,8 +69,21 @@ public class Main extends Application {
 	
     // AFK Timer for the entire application
     private static Timer afkTimer;
+    
+    // New field to track if logout is being processed
+    private boolean isLoggingOut = false;
+    
+    private static Main instance; // Singleton instance
 	// -------------------------------
 	
+    public Main() {
+    	instance = this;
+    }
+    
+    public static Main getInstance() {
+    	return instance;
+    }
+    
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -171,29 +184,35 @@ public class Main extends Application {
         }
     }
 	
-    private void setupAfkTimer() {
-        if (afkTimer != null) {
-            afkTimer.cancel();
-        }
-        afkTimer = new Timer(true);
-        afkTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    logoutUser();
-                    showLogoutAlert();
-                });
-            }
-        }, 5 * 60 * 1000); // 5 minutes
-    }
+	private void setupAfkTimer() {
+	    if (afkTimer != null) {
+	        afkTimer.cancel(); // Cancel any existing timer
+	    }
+	    afkTimer = new Timer("AFK Timer", true); // Use a daemon thread
+	    afkTimer.schedule(new TimerTask() {
+	        @Override
+	        public void run() {
+	            Platform.runLater(() -> {
+	                // Check if user is logged in before logging out
+	                if (authenticationPane.isLoggedIn()) {
+	                    logoutUser();
+	                }
+	            });
+	        }
+	    }, 1 * 10 * 1000); // 5 minutes in milliseconds
+	}
 
     private void logoutUser() {
-        // Logic to handle user logout
-        authenticationPane.logout();
-        // Reset the timer to null or cancel it
-        if (afkTimer != null) {
-            afkTimer.cancel();
+        if (isLoggingOut) {
+            return; // Prevent recursive calls
         }
+        isLoggingOut = true;
+
+        // Logic to handle user logout
+        authenticationPane.performLogout();
+        showLogoutAlert();
+
+        isLoggingOut = false;
     }
 
     private void showLogoutAlert() {
