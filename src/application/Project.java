@@ -13,6 +13,7 @@ public class Project {
 	private String userStoryName;
 	private String userStoryDescription;
 	private ArrayList<EffortLog> effortLogs;
+	private ArrayList<DefectLog> defectLogs;
     private List<String> lifeCycleSteps;
     private Map<String, Definitions> lifeCycleDefinitions;
 
@@ -23,6 +24,7 @@ public class Project {
 		userStoryName = "";
 		userStoryDescription = "";
 		effortLogs = new ArrayList<EffortLog>();
+		defectLogs = new ArrayList<DefectLog>();
         lifeCycleSteps = new ArrayList<>();
         lifeCycleDefinitions = new HashMap<>();
         // Initialize with some default steps for demonstration
@@ -37,6 +39,7 @@ public class Project {
 		userStoryName = "";
 		userStoryDescription = "";
 		effortLogs = new ArrayList<EffortLog>();
+		defectLogs = new ArrayList<DefectLog>();
         lifeCycleSteps = new ArrayList<>();
         lifeCycleDefinitions = new HashMap<>();
         // Initialize with some default steps for demonstration
@@ -51,6 +54,7 @@ public class Project {
 		userStoryName = storyName;
 		userStoryDescription = storyDesc;
 		effortLogs = new ArrayList<EffortLog>();
+		defectLogs = new ArrayList<DefectLog>();
         lifeCycleSteps = new ArrayList<>();
         lifeCycleDefinitions = new HashMap<>();
         // Initialize with some default steps for demonstration
@@ -102,6 +106,50 @@ public class Project {
 	public void addLog(EffortLog newLog) {
 		effortLogs.add(newLog);
 	}
+
+	public ArrayList<DefectLog> getDefectLogs() {
+        	return defectLogs;
+    }
+    
+    public void clearDefectLogs() {
+        defectLogs.clear();
+    }
+    
+    public void addDefectLog(DefectLog defectLog) {
+        defectLogs.add(defectLog);
+    }
+
+
+    public void deleteDefectLog(DefectLog defectLog) {
+        defectLogs.remove(defectLog);
+    }
+
+    public int findDefectLogIndex(DefectLog defectLog) {
+        return defectLogs.indexOf(defectLog);
+    }
+
+    public void updateDefectLog(DefectLog updatedDefect) {
+        for (int i = 0; i < defectLogs.size(); i++) {
+            DefectLog existingDefect = defectLogs.get(i);
+            if (existingDefect.getDefectName().equals(updatedDefect.getDefectName())) {
+                // assumes that the defect names are unique
+                defectLogs.set(i, updatedDefect);
+                return;
+            }
+        }
+	    // i still have some debug and stuff that i need to clean up
+        System.out.println("Defect log not found for updating.");
+    }
+
+    
+    public void updateDefectLog(int index, DefectLog newDefect) {
+        // Replace the defect log at the specified index
+        if (index >= 0 && index < defectLogs.size()) {
+            defectLogs.set(index, newDefect);
+        } else {
+            System.out.println("Index out of bounds for defect logs.");
+        }
+    }
 	
     public ObservableList<String> getLifeCycleSteps() {
         return FXCollections.observableArrayList(lifeCycleSteps);
