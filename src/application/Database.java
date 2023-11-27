@@ -84,4 +84,44 @@ public class Database{
 		}
 		return true;
 	}
+
+	public ArrayList<DefectLog> getDefectLogs(Project p) {
+		return p.getDefectLogs();
+	}
+	
+	public void clearDefectLogs(Project p) {
+		p.clearDefectLogs();
+	}
+	
+	public void addDefectLog(DefectLog log, Project p) {
+		if (p != null) {
+            p.addDefectLog(log);
+            updateProject(p);
+        } else {
+            System.out.println("Project is null in addDefectLog");
+        	}
+	}
+	
+	public void updateDefectLog(DefectLog log, Project p) {
+	    if (p != null) {
+	        p.updateDefectLog(log);
+	        updateProject(p);
+	    } else {
+	        System.out.println("Project is null in updateDefectLog");
+	    }
+	}
+
+	
+	public void updateProject(Project p) {
+	    int projectIndex = findProjectIndex(p);
+	    if (projectIndex != -1) {
+	        projects.set(projectIndex, p);
+	    } else {
+	        System.out.println("Project not found for updating.");
+	    }
+	}
+
+    private int findProjectIndex(Project p) {
+        return projects.indexOf(p);
+    }
 }

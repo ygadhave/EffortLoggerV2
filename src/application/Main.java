@@ -89,7 +89,7 @@ public class Main extends Application {
 			// Setup the defect tab
 			defectTab = new Tab("Defect Console");
 			defectManager = new DefectManager(database);
-			defectPane = new DefectPane(defectManager);
+			defectPane = new DefectPane(defectManager, database);
 			defectTab.setContent(defectPane);
 			
 			// Setup the logs tab
