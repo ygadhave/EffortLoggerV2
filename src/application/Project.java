@@ -16,7 +16,6 @@ public class Project {
 	private ArrayList<DefectLog> defectLogs;
     private List<String> lifeCycleSteps;
     private Map<String, Definitions> lifeCycleDefinitions;
-
 	
 	public Project() {
 		projectName = "";
@@ -141,7 +140,6 @@ public class Project {
         System.out.println("Defect log not found for updating.");
     }
 
-    
     public void updateDefectLog(int index, DefectLog newDefect) {
         // Replace the defect log at the specified index
         if (index >= 0 && index < defectLogs.size()) {

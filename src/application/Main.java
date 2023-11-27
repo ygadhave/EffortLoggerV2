@@ -132,10 +132,8 @@ public class Main extends Application {
 			root.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
 			    // If the user is entering the Planning Poker Tab, refresh the effort log list
 				if ((int)newValue == 5) {
-					ArrayList<EffortLog> currentLogList = planningPokerPane.getSelectedProject().getEffortLogs();
-					planningPokerPane.updateEffortListArea(currentLogList);
-					planningPokerPane.setSelectedLog(null);
-					planningPokerPane.clearDefectListArea();
+					planningPokerPane.updateEffortListArea(planningPokerPane.getSelectedProject());
+					planningPokerPane.updateDefectListArea(planningPokerPane.getSelectedProject());
 				}
 				
 				// If the user is leaving the Planning Poker Tab, save the current weight and bias settings

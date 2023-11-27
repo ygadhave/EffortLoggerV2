@@ -1,29 +1,24 @@
 package application;
 
 public class DefectLog {
-	// Data attributes
-	private int defectHours;
-	private int defectMinutes;
-	private double weight;
-	private int bias;
-	private int storyPoints;
-	private boolean selected;
-	private String defectCategory;
+	// Defect attributes
 	private String defectName;
+	private String defectCategory;
 	private String stepWhenInjected;
     private String stepWhenRemoved;
     private String defectSymptoms;
     private String fix;
     private boolean isClosed;
+    
+    // Data attributes
+	private int storyPoints;
+	private boolean selected;
+
 
 	// Default Constructor
 	public DefectLog() {
-		defectHours = 0;
-		defectMinutes = 0;
-		weight = 1;
-		bias = 0;
-		storyPoints = -1;
-		selected = true;
+		storyPoints = 0;
+		selected = false;
 		defectCategory = "";
 		defectName = "";
 		stepWhenInjected = "";
@@ -33,13 +28,9 @@ public class DefectLog {
 	}
 
 	// Basic Constructor
-	public DefectLog(int hours, int minutes) {
-		defectHours = Math.abs(hours);
-		defectMinutes = Math.abs(minutes);
-		weight = 1;
-		bias = 0;
-		storyPoints = -1;
-		selected = true;
+	public DefectLog(int points) {
+		storyPoints = points;
+		selected = false;
 		defectCategory = "";
 		defectName = "";
 		stepWhenInjected = "";
@@ -47,24 +38,6 @@ public class DefectLog {
 		defectSymptoms = "";
 		fix = "";
 	}
-
-	// Advanced Constructor
-	public DefectLog(int hours, int minutes, double w, int b) {
-		defectHours = Math.abs(hours);
-		defectMinutes = Math.abs(minutes);
-		weight = w;
-		bias = b;
-		storyPoints = -1;
-		selected = true;
-		defectCategory = "";
-		defectName = "";
-		stepWhenInjected = "";
-		stepWhenRemoved = "";
-		defectSymptoms = "";
-		fix = "";
-	}
-
-
 
 	public void setDefectName(String defectName) {
         this.defectName = defectName;
@@ -74,37 +47,14 @@ public class DefectLog {
         return defectName;
     }
 
-	public void setTime(int hours, int minutes) {
-		defectHours = hours;
-		defectMinutes = minutes;
-	}
-
-	public int getHours() {
-		return defectHours;
-	}
-
-	public int getMinutes() {
-		return defectMinutes;
-	}
-
-	public void setWeight(double w) {
-		weight = w;
-	}
-
-	public double getWeight() {
-		return weight;
-	}
-
-	public void setBias(int b) {
-		bias = b;
-	}
-
-	public int getBias() {
-		return bias;
-	}
-
 	public void setStoryPoints(int points) {
-		storyPoints = points;
+		if (points < 0) {
+			System.out.println("Warning: Defect log story points cannot be less than zero. Setting to zero instead.");
+			storyPoints = 0;
+		}
+		else {
+			storyPoints = points;
+		}
 	}
 
 	public int getStoryPoints() {
@@ -119,18 +69,18 @@ public class DefectLog {
 		return selected;
 	}
 
-	public String getDefectCategory() {
-        return defectCategory;
-    }
-
     public void setDefectCategory(String defectCategory) {
         this.defectCategory = defectCategory;
+    }
+    
+	public String getDefectCategory() {
+        return defectCategory;
     }
 
     public void setStepWhenInjected(String stepWhenInjected) {
         this.stepWhenInjected = stepWhenInjected;
     }
-
+    
     public String getStepWhenInjected() {
         return stepWhenInjected;
     }

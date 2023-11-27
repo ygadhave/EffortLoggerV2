@@ -18,9 +18,6 @@ public class PlanningPokerPane extends VBox {
 	// Project Info Window
 	Stage infoStage;
 	
-	// Variable to store which effort log has its defect logs shown
-	private EffortLog currentlySelectedLog;
-	
 	// Header Elements
 	private Project selectedProject;
 	private String selectedProjectName;
@@ -107,9 +104,6 @@ public class PlanningPokerPane extends VBox {
 		this.getChildren().addAll(viewerButtons, effortLogScrollPane, defectLogScrollPane);
 		this.getChildren().addAll(generateEstimateButton, estimateLabel, errorLabel);
 		this.getChildren().add(randomLogButton);
-		
-		// Initialize currentlySelectedLog
-		currentlySelectedLog = null;
 	}
 	
 	public void setSelectedProject(Project p) {
@@ -118,14 +112,6 @@ public class PlanningPokerPane extends VBox {
 	
 	public Project getSelectedProject() {
 		return selectedProject;
-	}
-	
-	public void setSelectedLog(EffortLog log) {
-		currentlySelectedLog = log;
-	}
-	
-	public EffortLog getSelectedLog() {
-		return currentlySelectedLog;
 	}
 	
 	public void openProjectInfoWindow() {
@@ -168,9 +154,12 @@ public class PlanningPokerPane extends VBox {
 	}
 	
 	// Updates the displayed effort log list to the current list of effort logs
-	public void updateEffortListArea(ArrayList<EffortLog> newLogList) {
+	public void updateEffortListArea(Project project) {
 		// Clear the current display
 		effortLogListArea.getChildren().clear();
+		
+		// Get the effort logs from the project
+		ArrayList<EffortLog> newLogList = project.getEffortLogs();
 		
 		// If the current list of effort logs is zero, do nothing
 		if (newLogList.size() < 1) {
@@ -199,15 +188,13 @@ public class PlanningPokerPane extends VBox {
 			TextField biasField = new TextField("" + bias);
 			CheckBox selectBox = new CheckBox();
 			selectBox.setSelected(selected);
-			Button defectViewButton = new Button("View Defect Logs");
-			defectViewButton.setOnAction(new DefectViewButtonHandler());
 			Button logInfoButton = new Button("View Info");
 			logInfoButton.setOnAction(new LogInfoButtonHandler());
 			
 			effortLogDisplay.setSpacing(5);
 			
 			// Add the elements to the log's display and add the display to the list
-			effortLogDisplay.getChildren().addAll(id, hoursTitle, hoursNumber, minutesTitle, minutesNumber, weightField, biasField, selectBox, defectViewButton, logInfoButton);
+			effortLogDisplay.getChildren().addAll(id, hoursTitle, hoursNumber, minutesTitle, minutesNumber, weightField, biasField, selectBox, logInfoButton);
 			
 			// Format the effort log display element
 			effortLogDisplay.setSpacing(10);
@@ -217,40 +204,36 @@ public class PlanningPokerPane extends VBox {
 	}
 	
 	// Updates the displayed defect log list for a certain effort log
-	public void updateDefectListArea(ArrayList<DefectLog> newLogList) {
+	public void updateDefectListArea(Project project) {
 		// Clear the current display
 		clearDefectListArea();
 		
-		// If the current list of defect logs is zero, do nothing
-		if (newLogList.size() < 1) {
+		// Get the defect logs from the project
+		ArrayList<DefectLog> defectLogs = project.getDefectLogs();
+		
+		// If the current project's list of defect logs is zero, do nothing
+		if (defectLogs.size() < 1) {
 			return;
 		}
 		
 		// Loop through the new effort log list and create a display element for each log
-		for (int i = 0; i < newLogList.size(); i++) {
+		for (int i = 0; i < defectLogs.size(); i++) {
 			// Initialize the log's display
 			HBox defectLogDisplay = new HBox();
 			
-			// Get effort data from the log
-			int hours = newLogList.get(i).getHours();
-			int minutes = newLogList.get(i).getMinutes();
-			double weight = newLogList.get(i).getWeight();
-			int bias = newLogList.get(i).getBias();
-			boolean selected = newLogList.get(i).getSelected();
+			// Get data from the log
+			int storyPoints = defectLogs.get(i).getStoryPoints();
+			boolean selected = defectLogs.get(i).getSelected();
 			
 			// Set the labels and text fields
 			Label id = new Label(Integer.toString(i));
-			Label hoursTitle = new Label("Hours: ");
-			Label hoursNumber = new Label("" + hours);
-			Label minutesTitle = new Label("Minutes: ");
-			Label minutesNumber = new Label("" + minutes);
-			TextField weightField = new TextField("" + weight);
-			TextField biasField = new TextField("" + bias);
+			Label storyPointsLabel = new Label("Story Points:");
+			TextField storyPointsField = new TextField("" + storyPoints);
 			CheckBox selectBox = new CheckBox();
 			selectBox.setSelected(selected);
 			
 			// Add the elements to the log's display and add the display to the list
-			defectLogDisplay.getChildren().addAll(id, hoursTitle, hoursNumber, minutesTitle, minutesNumber, weightField, biasField, selectBox);
+			defectLogDisplay.getChildren().addAll(id, storyPointsLabel, storyPointsField, selectBox);
 			
 			// Format the defect log display element
 			defectLogDisplay.setSpacing(10);
@@ -268,12 +251,12 @@ public class PlanningPokerPane extends VBox {
 	public void saveSettings() {
 		try {
 			manager.saveEffortLogSettings(effortLogListArea, selectedProject);
-			manager.saveDefectLogSettings(defectLogListArea, currentlySelectedLog);
+			manager.saveDefectLogSettings(defectLogListArea, selectedProject);
 		}
 		catch (NumberFormatException exception) {
-			System.out.println("Error: One of the weights or biases is in the incorrect format.");
+			System.out.println("Error: One of the weights, biases, or story points values is in the incorrect format.");
 			System.out.println(exception.getMessage());
-			errorLabel.setText("Error: One of the weights or biases is in the incorrect format.");
+			errorLabel.setText("Error: One of the weights, biases, or story points values is in the incorrect format.");
 		}
 		catch (Exception exception) {
 			System.out.println(exception.getMessage());
@@ -296,16 +279,9 @@ public class PlanningPokerPane extends VBox {
 	private class RefreshButtonHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
 			try {
-				// Refresh the list display area
-				ArrayList<EffortLog> newLogList = selectedProject.getEffortLogs();
-				updateEffortListArea(newLogList);
-				if (currentlySelectedLog != null) {
-					ArrayList<DefectLog> newDefectLogList = currentlySelectedLog.getDefectLogs();
-					updateDefectListArea(newDefectLogList);
-				}
-				else {
-					clearDefectListArea();
-				}
+				// Refresh the list display areas
+				updateEffortListArea(selectedProject);
+				updateDefectListArea(selectedProject);
 			}
 			catch (Exception exception) {
 				System.out.println(exception.getMessage());
@@ -326,54 +302,28 @@ public class PlanningPokerPane extends VBox {
 		public void handle(ActionEvent event) {
 			try {
 				// Save current settings to the database
-				manager.saveEffortLogSettings(effortLogListArea, selectedProject);
-				manager.saveDefectLogSettings(defectLogListArea, currentlySelectedLog);
-				
-				// Initialize a new array list to store all of the logs to be used in the calculation
-				ArrayList<EffortLog> effortLogsToCalculate = new ArrayList<EffortLog>();
+				saveSettings();
 				
 				// Get the story points per hour conversion rate
 				int pointsPerHour = Integer.parseInt(storyPointsField.getText());
 				
-				// For each element in the display list, get the data from that element and add it to a log
-				// in the logs to calculate array list
-				for (int i = 0; i < effortLogListArea.getChildren().size(); i++) {
-					
-					HBox listElement = (HBox)effortLogListArea.getChildren().get(i);
-					
-					CheckBox selectBox = (CheckBox)listElement.getChildren().get(7);
-					if (selectBox.isSelected()) {
-						Label hoursLabel = (Label)listElement.getChildren().get(2);
-						Label minutesLabel = (Label)listElement.getChildren().get(4);
-						TextField weightField = (TextField)listElement.getChildren().get(5);
-						TextField biasField = (TextField)listElement.getChildren().get(6);
-						
-						int hours = Integer.parseInt(hoursLabel.getText());
-						int minutes = Integer.parseInt(minutesLabel.getText());
-						double weight = Double.parseDouble(weightField.getText());
-						int bias = Integer.parseInt(biasField.getText());
-						
-						EffortLog log = new EffortLog(hours, minutes, weight, bias);
-						effortLogsToCalculate.add(log);
+				// Initialize a new array list to store all of the logs to be used in the calculation
+				ArrayList<EffortLog> effortLogsToCalculate = new ArrayList<EffortLog>();
+				for (int i = 0; i < selectedProject.getEffortLogs().size(); i++) {
+					if (selectedProject.getEffortLogs().get(i).getSelected() == true) {
+						effortLogsToCalculate.add(selectedProject.getEffortLogs().get(i));
 					}
-					
-					ArrayList<DefectLog> defectLogs = selectedProject.getEffortLogs().get(i).getDefectLogs();
-					if (defectLogs.size() > 0) {
-						for (int j = 0; j < defectLogs.size(); j++) {
-							if (defectLogs.get(j).getSelected()) { 
-								EffortLog log = new EffortLog(defectLogs.get(j).getHours(), 
-															  defectLogs.get(j).getMinutes(), 
-															  defectLogs.get(j).getWeight(), 
-															  defectLogs.get(j).getBias());
-								effortLogsToCalculate.add(log);
-							}
-						}
+				}
+				
+				ArrayList<DefectLog> defectLogsToCalculate = new ArrayList<DefectLog>();
+				for (int i = 0; i < selectedProject.getDefectLogs().size(); i++) {
+					if (selectedProject.getDefectLogs().get(i).getSelected() == true) {
+						defectLogsToCalculate.add(selectedProject.getDefectLogs().get(i));
 					}
-					
 				}
 				
 				// Generate the estimate
-				int estimate = manager.calculateAverage(effortLogsToCalculate, pointsPerHour);
+				int estimate = manager.calculateAverage(effortLogsToCalculate, defectLogsToCalculate, pointsPerHour);
 				estimateLabel.setText("Estimate: " + estimate);
 			}
 			catch (NumberFormatException exception) {
@@ -386,28 +336,6 @@ public class PlanningPokerPane extends VBox {
 				
 				// v Doesn't work for some reason v
 				errorLabel.setText(exception.getMessage());
-			}
-		}
-	}
-	
-	// Handles clicking the defect view button for an effort log
-	private class DefectViewButtonHandler implements EventHandler<ActionEvent> {
-		public void handle(ActionEvent event) {
-			try {
-				// Save the currently selected defect logs list
-				manager.saveDefectLogSettings(defectLogListArea, currentlySelectedLog);
-				
-				// Refresh the list display area
-				Button sourceButton = (Button)event.getSource();
-				HBox listItem = (HBox)sourceButton.getParent();
-				Label idLabel = (Label)listItem.getChildren().get(0);
-				EffortLog effortLog = selectedProject.getEffortLogs().get(Integer.parseInt(idLabel.getText()));
-				ArrayList<DefectLog> defectLogs = effortLog.getDefectLogs();
-				updateDefectListArea(defectLogs);
-				currentlySelectedLog = effortLog;
-			}
-			catch (Exception exception) {
-				System.out.println(exception.getMessage());
 			}
 		}
 	}

@@ -1,7 +1,5 @@
 package application;
 
-import java.util.ArrayList;
-
 // EffortLog class written by Donovan Harp and Yashwant Gadhave
 public class EffortLog {
 	// Data attributes
@@ -11,11 +9,9 @@ public class EffortLog {
 	private int bias;
 	private int storyPoints;
 	private boolean selected;
-	private Definitions cycle;
+	private Definitions definitions;
 	private String startTime;
     private String stopTime;
-	
-	private ArrayList<DefectLog> defectLogs;
 	
 	// Default Constructor
 	public EffortLog() {
@@ -25,8 +21,6 @@ public class EffortLog {
 		bias = 0;
 		storyPoints = -1;
 		selected = true;
-		
-		defectLogs = new ArrayList<DefectLog>();
 	}
 	
 	// Basic Constructor
@@ -37,8 +31,6 @@ public class EffortLog {
 		bias = 0;
 		storyPoints = -1;
 		selected = true;
-		
-		defectLogs = new ArrayList<DefectLog>();
 	}
 	
 	// Advanced Constructor
@@ -49,8 +41,6 @@ public class EffortLog {
 		bias = b;
 		storyPoints = -1;
 		selected = true;
-		
-		defectLogs = new ArrayList<DefectLog>();
 	}
 	
 	public void setTime(int hours, int minutes) {
@@ -99,19 +89,11 @@ public class EffortLog {
 	}
 	
 	public void setDefinitions(Definitions d) {
-		cycle = d;
+		definitions = d;
 	}
 	
 	public Definitions getDefinitions() {
-		return cycle;
-	}
-	
-	public ArrayList<DefectLog> getDefectLogs() {
-		return defectLogs;
-	}
-	
-	public void addDefectLog(DefectLog newLog) {
-		defectLogs.add(newLog);
+		return definitions;
 	}
 	
 	public void setStartTime(String startTime) {
