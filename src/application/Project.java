@@ -1,5 +1,6 @@
 package application;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
@@ -7,7 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Project {
+public class Project implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private String projectName;
     private String projectNumber;
 	private String userStoryName;

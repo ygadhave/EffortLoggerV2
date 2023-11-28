@@ -1,43 +1,37 @@
 package application;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import java.util.function.Consumer;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
-/* Made by Troy Reiling, member of Team Tu12 in CSE360 Fall 2023
-This is an authentication prototype intended to demonstrate one way of
-how a proper authentication system can be built for EffortLoggerV2.
-
-It does not use a database, nor does it save the accounts to file as the
-scope does not extend that far. This prototype simply shows how accounts
-can be used to check if someone has the privilege to do something.
-*/
+import javafx.scene.control.ComboBox;
 
 public class AuthenticationPane extends VBox {
-    private ObservableList<Account> accounts = FXCollections.observableArrayList();
+    private AuthenticationManager manager;
     private Account loggedInAccount = null;
     private Button btnRegister = new Button("Register");
     private Button btnLogin = new Button("Login");
     private Button btnLogout = new Button("Logout");
     private Button btnTest = new Button("Test");
-    private Timer timer = new Timer(true);
     private Label lblAccountInfo = new Label("");
+    private Consumer<Account> visibilityUpdater;
+    private Runnable logoutHandler;
+    // Modified to flag when a logout is in progress to prevent recursive calls
+    private boolean isLoggingOut = false;
 
-    public AuthenticationPane() {
+    public AuthenticationPane(AuthenticationManager manager, Consumer<Account> visibilityUpdater) {
+        this.manager = manager;
+        this.visibilityUpdater = visibilityUpdater;
         initializeUI();
     }
 
@@ -52,26 +46,43 @@ public class AuthenticationPane extends VBox {
         btnTest.setOnAction(e -> test());
     }
 
-    // Create a popup window to register through
     private void register() {
         Stage registerStage = new Stage();
         registerStage.initModality(Modality.APPLICATION_MODAL);
-        VBox layout = new VBox(10);
+        VBox layout = new VBox(5);
         layout.setAlignment(Pos.CENTER);
         TextField usernameField = new TextField();
         PasswordField passwordField = new PasswordField();
+        ComboBox<String> privilegeComboBox = new ComboBox<>();
+        privilegeComboBox.getItems().addAll("Guest","Worker","Admin");
+        privilegeComboBox.setValue("Guest"); // default value
         Button btnSubmit = new Button("Register");
-        layout.getChildren().addAll(new Label("Username:"), usernameField, new Label("Password:"), passwordField, btnSubmit);
+        layout.getChildren().addAll(new Label("Username:"), usernameField, new Label("Password:"), passwordField, new Label("Privilege:"), privilegeComboBox, btnSubmit);
         registerStage.setScene(new Scene(layout, 300, 200));
 
         btnSubmit.setOnAction(e -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
+            String privilegeText = privilegeComboBox.getValue().trim();
+            int privilege;
+            switch (privilegeText) {
+            case "Guest":
+            	privilege = 0;
+            	break;
+            case "Worker":
+            	privilege = 1;
+            	break;
+            case "Admin":
+            	privilege = 2;
+            	break;
+            default:
+            	privilege = 0; // default if it goes wrong
+            	System.out.println(privilegeText);
+            }
 
-            if (accounts.stream().noneMatch(account -> account.getUsername().equals(username))) {
-                Account newAccount = new Account(accounts.size(), username, password, 1);
-                accounts.add(newAccount);
+            boolean registrationSuccessful = manager.registerAccount(username, password, privilege);
 
+            if (registrationSuccessful) {
                 // Notify the user of successful registration
                 Alert alert = new Alert(AlertType.INFORMATION);
                 alert.setTitle("Success");
@@ -81,10 +92,11 @@ public class AuthenticationPane extends VBox {
 
                 registerStage.close();
             } else {
+                // Notify the user of registration failure
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Registration Failed");
-                alert.setContentText("Username already exists.");
+                alert.setContentText("Username already exists or registration failed.");
                 alert.showAndWait();
             }
         });
@@ -92,7 +104,7 @@ public class AuthenticationPane extends VBox {
         registerStage.showAndWait();
     }
 
-    // Create a popup window to login through
+
     private void login() {
         Stage loginStage = new Stage();
         loginStage.initModality(Modality.APPLICATION_MODAL);
@@ -108,42 +120,47 @@ public class AuthenticationPane extends VBox {
             String username = usernameField.getText();
             String password = passwordField.getText();
 
-            Account match = accounts.stream().filter(account -> account.getUsername().equals(username) && account.getPassword().equals(password)).findFirst().orElse(null);
-
-            if (match != null) {
-                loggedInAccount = match;
-                // Remove the layout intended for logged out users
+            manager.login(username, password).ifPresentOrElse(account -> {
+                loggedInAccount = account;
                 getChildren().clear();
-                // Add the layout intended for logged in users
                 getChildren().addAll(lblAccountInfo, btnLogout, btnTest);
                 lblAccountInfo.setText("Logged in as: " + loggedInAccount.getUsername() + " (ID: " + loggedInAccount.getId() + ")");
-                // Start the AFK timer
-                resetTimer();
-
+                visibilityUpdater.accept(loggedInAccount); // Update tab visibility
                 loginStage.close();
-            } else {
+            }, () -> {
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Login Failed");
                 alert.setContentText("Incorrect username or password.");
                 alert.showAndWait();
-            }
+            });
         });
 
         loginStage.showAndWait();
     }
 
-    // Log out of the account
-    private void logout() {
-        loggedInAccount = null;
-        // Remove the layout intended for logged in users
-        getChildren().clear();
-        // Add the layout intended for logged out users
-        getChildren().addAll(btnRegister, btnLogin);
-        // Cancel the AFK timer
-        timer.cancel();
+    public void setLogoutHandler(Runnable logoutHandler) {
+        this.logoutHandler = logoutHandler;
     }
 
+    // This method only performs the logout logic without triggering the handler
+    public void performLogout() {
+        loggedInAccount = null;
+        getChildren().clear();
+        getChildren().addAll(btnRegister, btnLogin);
+        Main.stopAfkTimer();
+        visibilityUpdater.accept(null); // Update tab visibility for logout
+    }
+
+    // This method is called externally and triggers the logout handler
+    public void logout() {
+        performLogout(); // Perform actual logout
+    }
+
+    public boolean isLoggedIn() {
+        return loggedInAccount != null;
+    }
+    
  // Test how account privilege works
     private void test() {
         String message;
@@ -171,26 +188,7 @@ public class AuthenticationPane extends VBox {
         alert.setHeaderText("Test Result");
         alert.setContentText(message);
         alert.showAndWait();
-        // User is active, reset the AFK timer
-        resetTimer();
-    }
-
-    // Timer to kick out inactive logged in users
-    private void resetTimer() {
-        timer.cancel();
-        timer = new Timer(true);
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                	logout();
-                	Alert alert = new Alert(AlertType.INFORMATION);
-                	alert.setTitle("Logged Out");
-                	alert.setHeaderText("Automatic Logout");
-                	alert.setContentText("You have been logged out for inactivity.");
-                	alert.showAndWait();
-                });
-            }
-        }, 5 * 60 * 1000); // 5 minutes
+        
+        Main.getInstance().resetAfkTimer();
     }
 }

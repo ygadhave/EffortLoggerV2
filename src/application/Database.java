@@ -1,10 +1,16 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.io.*;
 
 // Database class written by Donovan Harp and Troy Reiling and Yashwant Gadhave
 
-public class Database{
+public class Database implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	private static final String DATABASE_FILE = "database.ser";
 	// TO DO: Add separate project objects with their own effort log lists and project/task data
 	
 	// Effort logs list
@@ -12,6 +18,8 @@ public class Database{
 	private ArrayList<Definitions> definitions;
 	private ArrayList<EffortLog> effortlog;
     private int projectCount = 0;
+    private Map<String, Account> accounts = new HashMap<>();
+    private AtomicInteger accountIdCounter = new AtomicInteger(0);
 	
 	public Database() {
 		projects = new ArrayList<Project>();
@@ -48,7 +56,7 @@ public class Database{
 	public void deleteDefinition(Definitions d) {
 		definitions.remove(d);
 	}
-	
+
 	public void deleteEffortLog(EffortLog e) {
 		effortlog.remove(e);
 	}
@@ -85,6 +93,7 @@ public class Database{
 		return true;
 	}
 
+
 	public ArrayList<DefectLog> getDefectLogs(Project p) {
 		return p.getDefectLogs();
 	}
@@ -92,7 +101,7 @@ public class Database{
 	public void clearDefectLogs(Project p) {
 		p.clearDefectLogs();
 	}
-	
+
 	public void addDefectLog(DefectLog log, Project p) {
 		if (p != null) {
             p.addDefectLog(log);
@@ -111,7 +120,6 @@ public class Database{
 	    }
 	}
 
-	
 	public void updateProject(Project p) {
 	    int projectIndex = findProjectIndex(p);
 	    if (projectIndex != -1) {
@@ -123,5 +131,42 @@ public class Database{
 
     private int findProjectIndex(Project p) {
         return projects.indexOf(p);
+	}
+	
+    public boolean saveAccount(Account account) {
+        if (accounts.containsKey(account.getUsername())) {
+            return false; // Username already exists
+        }
+        accounts.put(account.getUsername(), account);
+        return true;
+    }
+
+    public Optional<Account> getAccount(String username) {
+        return Optional.ofNullable(accounts.get(username));
+    }
+
+    public int getNextAccountId() {
+        return accountIdCounter.incrementAndGet();
+    }
+    
+    public void saveToDisk() {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(DATABASE_FILE))) {
+            out.writeObject(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Database loadFromDisk() {
+        File file = new File(DATABASE_FILE);
+        if (file.exists()) {
+            try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
+                return (Database) in.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                return new Database(); // Return a new instance if load fails
+            }
+        }
+        return new Database();
     }
 }

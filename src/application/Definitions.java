@@ -1,8 +1,11 @@
 package application;
 
-// Definitions class written by Troy Reiling
+import java.io.Serializable;
 
-public class Definitions {
+// made by Troy Reiling
+
+public class Definitions implements Serializable {
+	private static final long serialVersionUID = 1L;
     private String cycleName;
     private String effortCategory;
     private String deliverable;

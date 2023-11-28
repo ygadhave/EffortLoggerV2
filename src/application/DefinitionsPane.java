@@ -13,7 +13,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 
-// made by Troy Reiling
+// written by Troy Reiling
 
 public class DefinitionsPane extends VBox {
     private DefinitionsManager manager;
@@ -49,7 +49,8 @@ public class DefinitionsPane extends VBox {
     }
 
     @SuppressWarnings("unchecked")
-	private void setupDefinitionsTable() {
+	// Setup the Definitions Table
+    private void setupDefinitionsTable() {
         TableColumn<Definitions, String> cycleNameColumn = new TableColumn<>("Cycle Name");
         cycleNameColumn.setCellValueFactory(new PropertyValueFactory<>("cycleName"));
 
@@ -71,6 +72,7 @@ public class DefinitionsPane extends VBox {
     }
 
     @SuppressWarnings("unchecked")
+    // Setup the Projects table
 	private void setupProjectsTable() {
         TableColumn<Project, String> projectNumberColumn = new TableColumn<>("Project #");
         projectNumberColumn.setCellValueFactory(new PropertyValueFactory<>("projectNumber"));
@@ -88,6 +90,7 @@ public class DefinitionsPane extends VBox {
         });
     }
 
+    // Setup definition buttons
     private void setupDefinitionButtons(HBox hbox) {
         addButton = new Button("Add");
         editButton = new Button("Edit");
@@ -100,6 +103,7 @@ public class DefinitionsPane extends VBox {
         hbox.getChildren().addAll(addButton, editButton, deleteButton);
     }
 
+    // Setup project buttons
     private void setupProjectButtons(HBox hbox) {
         addProjectButton = new Button("Add");
         editProjectButton = new Button("Edit");
@@ -115,11 +119,13 @@ public class DefinitionsPane extends VBox {
     private void addDefinition() {
         // Add a new blank Defined Life Cycle named "New Cycle"
         manager.addDefinition(new Definitions());
+        // Refresh the table
         definitionsTable.setItems(manager.getDefinitions());
     }
 
     private void editDefinition() {
         Definitions selectedDefinition = definitionsTable.getSelectionModel().getSelectedItem();
+        // Check to see if a definition is selected
         if (selectedDefinition != null) {
             Stage editStage = new Stage();
             VBox layout = new VBox(10);
@@ -136,11 +142,13 @@ public class DefinitionsPane extends VBox {
 
             effortCategoryComboBox.setOnAction(event -> updateDeliverableComboBox(effortCategoryComboBox, deliverableComboBox));
 
+            // Save the user's changes
             Button saveButton = new Button("Save");
             saveButton.setOnAction(event -> {
                 selectedDefinition.setCycleName(cycleNameField.getText());
                 selectedDefinition.setEffortCategory(effortCategoryComboBox.getValue());
                 selectedDefinition.setDeliverable(deliverableComboBox.getValue());
+                // Refresh the table
                 definitionsTable.refresh();
                 editStage.close();
             });
@@ -156,6 +164,7 @@ public class DefinitionsPane extends VBox {
         }
     }
     
+    // Ensure unique deliverables are shown
     private void updateDeliverableComboBox(ComboBox<String> effortCategoryComboBox, ComboBox<String> deliverableComboBox) {
         deliverableComboBox.getItems().clear();
         switch (effortCategoryComboBox.getValue()) {
@@ -177,6 +186,7 @@ public class DefinitionsPane extends VBox {
         }
     }
 
+    // Delete a definition
     private void deleteDefinition() {
         Definitions selectedDefinition = definitionsTable.getSelectionModel().getSelectedItem();
         if (selectedDefinition != null) {
@@ -197,8 +207,10 @@ public class DefinitionsPane extends VBox {
         projectsTable.setItems(manager.getProjects());
     }
 
+    // Edit a project
     private void editProject() {
         Project selectedProject = projectsTable.getSelectionModel().getSelectedItem();
+        // Is a project selected?
         if (selectedProject != null) {
             Stage editStage = new Stage();
             VBox layout = new VBox(10);
@@ -244,6 +256,7 @@ public class DefinitionsPane extends VBox {
                     ComboBox<Definitions> comboBox = (ComboBox<Definitions>) hbox.getChildren().get(1);
                     selectedProject.setDefinedLifeCycleForStep(selectedProject.getLifeCycleSteps().get(i), comboBox.getValue());
                 }
+                // Refresh the table
                 projectsTable.refresh();
                 editStage.close();
             });
@@ -258,6 +271,7 @@ public class DefinitionsPane extends VBox {
         }
     }
 
+    // Delete a project
     private void deleteProject() {
         Project selectedProject = projectsTable.getSelectionModel().getSelectedItem();
         if (selectedProject != null) {
