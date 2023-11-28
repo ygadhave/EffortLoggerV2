@@ -1,8 +1,11 @@
 package application;
 
+import java.io.Serializable;
+
 // made by Troy Reiling
 
-public class Definitions {
+public class Definitions implements Serializable {
+	private static final long serialVersionUID = 1L;
     private String cycleName;
     private String effortCategory;
     private String deliverable;

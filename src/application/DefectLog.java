@@ -1,6 +1,9 @@
 package application;
 
-public class DefectLog {
+import java.io.Serializable;
+
+public class DefectLog implements Serializable {
+	private static final long serialVersionUID = 1L;
 	// Data attributes
 	private int defectHours;
 	private int defectMinutes;

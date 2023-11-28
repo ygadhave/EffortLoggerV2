@@ -3,10 +3,14 @@ package application;
 import java.util.ArrayList;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.io.*;
 
 // Database class written by Donovan Harp and Troy Reiling
 
-public class Database{
+public class Database implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	private static final String DATABASE_FILE = "database.ser";
 	// TO DO: Add separate project objects with their own effort log lists and project/task data
 	
 	// Effort logs list
@@ -97,5 +101,26 @@ public class Database{
 
     public int getNextAccountId() {
         return accountIdCounter.incrementAndGet();
+    }
+    
+    public void saveToDisk() {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(DATABASE_FILE))) {
+            out.writeObject(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Database loadFromDisk() {
+        File file = new File(DATABASE_FILE);
+        if (file.exists()) {
+            try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
+                return (Database) in.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                return new Database(); // Return a new instance if load fails
+            }
+        }
+        return new Database();
     }
 }

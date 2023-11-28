@@ -90,8 +90,8 @@ public class Main extends Application {
 		try {
 			root = new TabPane();
 			
-			// Initialize the database
-			database = new Database();
+			// Load the database
+	        database = Database.loadFromDisk();
 			
 			// NOTE: There will always be exactly 10 projects created, and these can simply
 			//       be modified to fit the user's ends. These 10 will be created when the user
@@ -200,7 +200,7 @@ public class Main extends Application {
 	                }
 	            });
 	        }
-	    }, 1 * 10 * 1000); // 5 minutes in milliseconds
+	    }, 500 * 60 * 1000); // 5 minutes in milliseconds, temp set to 500
 	}
 
     private void logoutUser() {
@@ -250,6 +250,12 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+        // Add shutdown hook for saving the database
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (instance != null && instance.database != null) {
+                instance.database.saveToDisk();
+            }
+        }));
         launch(args);
     }
 }

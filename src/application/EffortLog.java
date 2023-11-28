@@ -1,9 +1,11 @@
 package application;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 // EffortLog class written by Donovan Harp
-public class EffortLog {
+public class EffortLog implements Serializable {
+	private static final long serialVersionUID = 1L;
 	// Data attributes
 	private int effortHours;
 	private int effortMinutes;
