@@ -1,9 +1,8 @@
 package application;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
-// EffortLog class written by Donovan Harp
+// EffortLog class written by Donovan Harp and Yashwant Gadhave
 public class EffortLog implements Serializable {
 	private static final long serialVersionUID = 1L;
 	// Data attributes
@@ -13,8 +12,9 @@ public class EffortLog implements Serializable {
 	private int bias;
 	private int storyPoints;
 	private boolean selected;
-	
-	private ArrayList<DefectLog> defectLogs;
+	private Definitions definitions;
+	private String startTime;
+    private String stopTime;
 	
 	// Default Constructor
 	public EffortLog() {
@@ -24,8 +24,6 @@ public class EffortLog implements Serializable {
 		bias = 0;
 		storyPoints = -1;
 		selected = true;
-		
-		defectLogs = new ArrayList<DefectLog>();
 	}
 	
 	// Basic Constructor
@@ -36,8 +34,6 @@ public class EffortLog implements Serializable {
 		bias = 0;
 		storyPoints = -1;
 		selected = true;
-		
-		defectLogs = new ArrayList<DefectLog>();
 	}
 	
 	// Advanced Constructor
@@ -48,8 +44,6 @@ public class EffortLog implements Serializable {
 		bias = b;
 		storyPoints = -1;
 		selected = true;
-		
-		defectLogs = new ArrayList<DefectLog>();
 	}
 	
 	public void setTime(int hours, int minutes) {
@@ -97,11 +91,31 @@ public class EffortLog implements Serializable {
 		return selected;
 	}
 	
-	public ArrayList<DefectLog> getDefectLogs() {
-		return defectLogs;
+	public void setDefinitions(Definitions d) {
+		definitions = d;
 	}
 	
-	public void addDefectLog(DefectLog newLog) {
-		defectLogs.add(newLog);
+	public Definitions getDefinitions() {
+		return definitions;
 	}
+	
+	public void setStartTime(String startTime) {
+        // You may want to perform additional validation here
+        this.startTime = startTime;
+    }
+	
+	// Get start time
+    public String getStartTime() {
+        return startTime;
+    }
+
+    // Set stop time
+    public void setStopTime(String stopTime) {
+        // You may want to perform additional validation here
+        this.stopTime = stopTime;
+    }
+    
+    public String getStopTime() {
+        return stopTime;
+    }
 }

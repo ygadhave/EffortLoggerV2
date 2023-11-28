@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.io.*;
 
-// Database class written by Donovan Harp and Troy Reiling
+// Database class written by Donovan Harp and Troy Reiling and Yashwant Gadhave
 
 public class Database implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -16,6 +16,7 @@ public class Database implements Serializable {
 	// Effort logs list
 	private ArrayList<Project> projects;
 	private ArrayList<Definitions> definitions;
+	private ArrayList<EffortLog> effortlog;
     private int projectCount = 0;
     private Map<String, Account> accounts = new HashMap<>();
     private AtomicInteger accountIdCounter = new AtomicInteger(0);
@@ -23,6 +24,7 @@ public class Database implements Serializable {
 	public Database() {
 		projects = new ArrayList<Project>();
 		definitions = new ArrayList<Definitions>();
+		effortlog = new ArrayList<EffortLog>();
 	}
 	
 	public ArrayList<Project> getProjects() {
@@ -53,6 +55,10 @@ public class Database implements Serializable {
 	
 	public void deleteDefinition(Definitions d) {
 		definitions.remove(d);
+	}
+
+	public void deleteEffortLog(EffortLog e) {
+		effortlog.remove(e);
 	}
 	
 	public void deleteProject(Project p) {
@@ -85,6 +91,46 @@ public class Database implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+
+	public ArrayList<DefectLog> getDefectLogs(Project p) {
+		return p.getDefectLogs();
+	}
+	
+	public void clearDefectLogs(Project p) {
+		p.clearDefectLogs();
+	}
+
+	public void addDefectLog(DefectLog log, Project p) {
+		if (p != null) {
+            p.addDefectLog(log);
+            updateProject(p);
+        } else {
+            System.out.println("Project is null in addDefectLog");
+        	}
+	}
+	
+	public void updateDefectLog(DefectLog log, Project p) {
+	    if (p != null) {
+	        p.updateDefectLog(log);
+	        updateProject(p);
+	    } else {
+	        System.out.println("Project is null in updateDefectLog");
+	    }
+	}
+
+	public void updateProject(Project p) {
+	    int projectIndex = findProjectIndex(p);
+	    if (projectIndex != -1) {
+	        projects.set(projectIndex, p);
+	    } else {
+	        System.out.println("Project not found for updating.");
+	    }
+	}
+
+    private int findProjectIndex(Project p) {
+        return projects.indexOf(p);
 	}
 	
     public boolean saveAccount(Account account) {

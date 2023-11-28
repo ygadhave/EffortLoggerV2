@@ -1,4 +1,6 @@
 package application;
+
+import java.util.ArrayList;
 	
 import java.util.Timer;
 
@@ -115,7 +117,7 @@ public class Main extends Application {
 			// Setup the defect tab
 			defectTab = new Tab("Defect Console");
 			defectManager = new DefectManager(database);
-			defectPane = new DefectPane(defectManager);
+			defectPane = new DefectPane(defectManager, database);
 			defectTab.setContent(defectPane);
 			
 			// Setup the logs tab
@@ -137,9 +139,9 @@ public class Main extends Application {
 			planningPokerTab.setContent(planningPokerPane);
 			
 			// Setup Jaylene's prototype
-			userInterfacePrototypeTab = new Tab("UI Prototype");
-			userInterfacePrototype = new UserInterfacePrototype();
-			userInterfacePrototypeTab.setContent(userInterfacePrototype);
+			// userInterfacePrototypeTab = new Tab("UI Prototype");
+			// userInterfacePrototype = new UserInterfacePrototype();
+			// userInterfacePrototypeTab.setContent(userInterfacePrototype);
 			
             // Setup authentication tab
             authenticationTab = new Tab("Authentication");
@@ -154,6 +156,20 @@ public class Main extends Application {
 
             // Add tabs
             root.getTabs().addAll(authenticationTab); // Initially, only the authentication tab is visible
+
+			// Check if the user enters or exits the Planning Poker Tab
+			root.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+			    // If the user is entering the Planning Poker Tab, refresh the effort log list
+				if ((int)newValue == 6) {
+					planningPokerPane.updateEffortListArea(planningPokerPane.getSelectedProject());
+					planningPokerPane.updateDefectListArea(planningPokerPane.getSelectedProject());
+				}
+				
+				// If the user is leaving the Planning Poker Tab, save the current weight and bias settings
+				if ((int)oldValue == 6) {
+					planningPokerPane.saveSettings();
+				}
+			});
 			
 			// Setup the main scene
 			Scene scene = new Scene(root,400,400);
@@ -242,7 +258,7 @@ public class Main extends Application {
             if (privilege == 0) {
                 root.getTabs().add(planningPokerTab);
             } else if (privilege == 1 || privilege == 2) {
-                root.getTabs().addAll(consoleTab, editorTab, defectTab, logsTab, definitionsTab, planningPokerTab, userInterfacePrototypeTab);
+                root.getTabs().addAll(consoleTab, editorTab, defectTab, logsTab, definitionsTab, planningPokerTab);
             }
         }
 

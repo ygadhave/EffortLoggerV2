@@ -3,11 +3,9 @@ package application;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
-//import javafx.scene.paint.Color;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
-//OnboardingPrototype class written by Yashwant Gadhave
 
 public class OnboardingPrototype extends Application {
 
@@ -17,18 +15,24 @@ public class OnboardingPrototype extends Application {
 
     private Stage primaryStage;
     private Stage userOrientationStage;
-    
-    private EffortLog effortLog; // To store EffortLog
-    //private int pointsPerHour;
-    
-    public OnboardingPrototype(Stage primaryStage) {
-    	this.primaryStage = primaryStage;
-    }
-    
 
-	@Override
+    private EffortLog effortLog;
+
+    private TaskState task1State = TaskState.NOT_COMPLETED;
+    private TaskState task2State = TaskState.NOT_COMPLETED;
+    private TaskState task3State = TaskState.NOT_COMPLETED;
+
+    public OnboardingPrototype(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
+    public enum TaskState {
+        NOT_COMPLETED, COMPLETED
+    }
+
+    @Override
     public void start(Stage primaryStage) {
-		this.userOrientationStage = primaryStage;
+        this.userOrientationStage = primaryStage;
         primaryStage.setTitle("EffortLogger V2 - Onboarding Prototype");
 
         VBox root = new VBox(10);
@@ -43,55 +47,45 @@ public class OnboardingPrototype extends Application {
 
     private void updateUI(VBox root) {
         root.getChildren().clear();
+
         if (currentStep == 1) {
-        	showSetPreferencesStep(root);
-            
+            showSetPreferencesStep(root);
         } else if (currentStep == 2) {
-        	showRegistrationStep(root);
-        	
+            showLearnAboutFeaturesStep(root);
         } else if (currentStep == 3) {
-        	showProjectCreationStep(root);
+            showRegistrationStep(root);
         } else if (currentStep == 4) {
-        	showStoryPointsStep(root);
-        	
-        } else if (currentStep == 5) {    
-        	showLearnAboutFeaturesStep(root);
+            showProjectCreationStep(root);
+        } else if (currentStep == 5) {
+            showStoryPointsStep(root);
+        } else if (currentStep == 6) {
+            showWelcomeStep(root);
         }
-        else if (currentStep == 6) {    
-        	showWelcomeStep(root);
-        }
-        
     }
-    
+
     public void calculateStoryPoints(EffortLog log, int pointsPerHour) {
         int hours = log.getHours();
         int minutes = log.getMinutes();
         int points = (hours * pointsPerHour) + (minutes * (pointsPerHour / 60));
         log.setStoryPoints(points);
     }
-    
+
     private void showSetPreferencesStep(VBox root) {
-        Label preferencesLabel = new Label("Step 1: Set Your Preferences");
-        
+        Label preferencesLabel = new Label("Set Your Preferences");
+
         Label languageLabel = new Label("Select your preferred language:");
         ComboBox<String> languageComboBox = new ComboBox<>();
-        languageComboBox.getItems().addAll("English", "Spanish", "French", "German");
+        languageComboBox.getItems().addAll("English");
         languageComboBox.setValue("English");
-        
-        //Label themeLabel = new Label("Choose your theme color:");
-        //ColorPicker colorPicker = new ColorPicker(Color.BLUE);
-        
+
         Button saveButton = new Button("Save Preferences");
 
         saveButton.setOnAction(e -> {
 
             String selectedLanguage = languageComboBox.getValue();
-            //Color selectedColor = colorPicker.getValue();
-            
-            // I plan on saving these preferences to our database but for now just printing them
+
             System.out.println("Selected Language: " + selectedLanguage);
-            //System.out.println("Selected Theme Color: " + selectedColor);
-            
+
             currentStep = 2;
             updateUI(root);
         });
@@ -99,45 +93,108 @@ public class OnboardingPrototype extends Application {
         root.getChildren().addAll(preferencesLabel, languageLabel, languageComboBox, saveButton);
     }
 
-    private void showRegistrationStep(VBox root) {
-        Label registrationLabel = new Label("Step 2: Register an Account");
-        Label registrationLabel1 = new Label ("Create a username");
-        TextField usernameField = new TextField();
-        usernameField.setPromptText("Enter your username");
-        Label registrationLabel2 = new Label ("Create a password");
-        TextField usernameField1 = new TextField();
-        usernameField.setPromptText("Enter a password");
-        Button registrationButton = new Button("Register");
+    private void showLearnAboutFeaturesStep(VBox root) {
+        Stage learnFeaturesStage = new Stage();
+        VBox learnFeaturesRoot = new VBox(10);
 
-        registrationButton.setOnAction(e -> {
-            username = usernameField.getText();
-            currentStep = 3;
+        Label featuresLabel = new Label("Learn about how to get started and features");
+
+        Label feature1Label = createTaskLabel("Task 1: Creating Username and Password", task1State);
+        Label feature1Description = new Label("Enter a valid username without any symbols and a password to create an account");
+
+        Label feature2Label = createTaskLabel("Task 2: Create Project", task2State);
+        Label feature2Description = new Label("Select the name for the project to continue");
+
+        Label feature3Label = createTaskLabel("Task 3: Calculate story points", task3State);
+        Label feature3Description = new Label("Enter hours and minutes to see the estimation of story points");
+
+        Button selectButton = new Button("Next");
+
+        selectButton.setOnAction(e -> {
+            learnFeaturesStage.close();
+            currentStep++;
             updateUI(root);
         });
 
-        root.getChildren().addAll(registrationLabel, registrationLabel1, usernameField, registrationLabel2, usernameField1, registrationButton);
+        learnFeaturesRoot.getChildren().addAll(
+                featuresLabel, feature1Label, feature1Description,
+                feature2Label, feature2Description,
+                feature3Label, feature3Description, selectButton);
+
+        Scene learnFeaturesScene = new Scene(learnFeaturesRoot, 600, 400);
+        learnFeaturesStage.setScene(learnFeaturesScene);
+        learnFeaturesStage.show();
     }
 
+    private Label createTaskLabel(String text, TaskState state) {
+        Label label = new Label(text);
+
+        if (state == TaskState.COMPLETED) {
+            label.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
+        } else {
+            label.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
+        }
+
+        return label;
+    }
+
+    private void showRegistrationStep(VBox root) {
+    	Label registrationLabel = new Label("Task 1: Register an Account");
+        Label fDescription = new Label("Enter a valid username without any symbols and a password to create an account");
+        Label registrationLabel1 = new Label("Create a username");
+        TextField usernameField = new TextField();
+        usernameField.setPromptText("Enter your username");
+        Label registrationLabel2 = new Label("Create a password");
+        TextField passwordField = new TextField();
+        passwordField.setPromptText("Enter a password");
+        Button registrationButton = new Button("Register");
+
+        registrationButton.setOnAction(e -> {
+        	
+            String enteredUsername = usernameField.getText();
+            String enteredPassword = passwordField.getText();
+
+            if (isValidUsername(enteredUsername) && isValidPassword(enteredPassword)) {
+                username = enteredUsername;
+                task1State = TaskState.COMPLETED;
+                showLearnAboutFeaturesStep(root);
+                
+            } else {
+                showErrorAlert("Invalid username or password. Please try again.");
+            }
+        });
+
+        root.getChildren().addAll(registrationLabel, fDescription, registrationLabel1, usernameField, registrationLabel2, passwordField, registrationButton);
+    }
+
+
+
     private void showProjectCreationStep(VBox root) {
-        Label projectLabel = new Label("Step 3: Create a Project");
+        Label projectLabel = new Label("Task 2: Create a Project");
         Label projectLabel1 = new Label ("Enter a name for the Project");
         TextField projectNameField = new TextField();
         projectNameField.setPromptText("Enter your project name");
         Button projectButton = new Button("Create Project");
 
         projectButton.setOnAction(e -> {
-            projectName = projectNameField.getText();
-            currentStep = 4;
-            updateUI(root);
+            String enteredProjectName = projectNameField.getText();
+            if (!enteredProjectName.isEmpty()) {
+                projectName = enteredProjectName;
+
+                	task2State = TaskState.COMPLETED;
+                	showLearnAboutFeaturesStep(root);
+
+            } else {
+                showErrorAlert("Project name cannot be empty. Please enter a valid project name.");
+            }
         });
 
         root.getChildren().addAll(projectLabel, projectLabel1, projectNameField, projectButton);
     }
     
     private void showStoryPointsStep(VBox root) {
-        Label storyPointsLabel = new Label("Step 4: Calculate Story Points");
+        Label storyPointsLabel = new Label("Task 3: Calculate Story Points");
 
-        // Input fields for EffortLog
         Label descriptionLabel = new Label("Enter hours:");
         TextField hoursField = new TextField();
         hoursField.setPromptText("Enter hours");
@@ -148,66 +205,75 @@ public class OnboardingPrototype extends Application {
         Button storyPointsButton = new Button("Calculate");
 
         storyPointsButton.setOnAction(e -> {
-            if (!hoursField.getText().isEmpty() && !minutesField.getText().isEmpty()) {
+            try {
                 int hours = Integer.parseInt(hoursField.getText());
                 int minutes = Integer.parseInt(minutesField.getText());
+
                 effortLog = new EffortLog(hours, minutes);
                 calculateStoryPoints(effortLog, minutes);
-                currentStep = 5; 
-                updateUI(root);
+
+                task3State = TaskState.COMPLETED;
+                showLearnAboutFeaturesStep(root);
+                
+            } catch (NumberFormatException ex) {
+                showErrorAlert("Please enter valid numeric values for hours and minutes.");
             }
         });
 
-        root.getChildren().addAll(storyPointsLabel,descriptionLabel, hoursField, descriptionLabel2, minutesField, storyPointsButton);
-    }
-    
-    private void showLearnAboutFeaturesStep(VBox root) {
-        Label featuresLabel = new Label("Step 5: Learn more About Features before getting started");
-
-        Label feature1Label = new Label("Feature 1: Task Management");
-        Label feature1Description = new Label("EffortLogger V2 helps you manage your tasks efficiently.");
-
-        Label feature2Label = new Label("Feature 2: Planning Poker");
-        Label feature2Description = new Label("Planning Poker is one of the essential features that has been in the new EffortLogger V2");
-        Label featureDescription = new Label("and will help streamline the process of setting up and estimating story points");
-        
-        Label feature3Label = new Label("Feature 3: Time Tracking");
-        Label feature3Description = new Label("Track the time you spend on each task.");
-        
-
-        Button selectButton = new Button("Next");
-
-        selectButton.setOnAction(e -> {
-        	updateUI(root);
-        	
-        });
-        
-        currentStep = 6;
-       
-
-        root.getChildren().addAll(featuresLabel, feature1Label, feature1Description, feature2Label, feature2Description, featureDescription, feature3Label, feature3Description, selectButton);
+        root.getChildren().addAll(storyPointsLabel, descriptionLabel, hoursField, descriptionLabel2, minutesField, storyPointsButton);
     }
 
 
     private void showWelcomeStep(VBox root) {
         Label welcomeLabel = new Label("Welcome, " + username + "!");
-        Label projectInfoLabel = new Label("Project created by the name: " + projectName);
-       
-        String storyPointsText = (effortLog != null) ? "Story Points calculated: " + effortLog.getStoryPoints() : "";
+        Label completedTasksLabel = new Label(username + ", successfully completed all the tasks and is ready to get started:");
+
+        Label task1Label = new Label("Task 1: Creating Username and Password");
+        Label task2Label = new Label("Task 2: Create Project");
+        Label task3Label = new Label("Task 3: Calculate story points");
+        
+        Label projectInfoLabel = new Label("Project name created during user orientation: " + projectName);
+        String storyPointsText = (effortLog != null) ? "Story points calculated during user orientation: " + effortLog.getStoryPoints() : "";
         Label storyPointsLabel = new Label(storyPointsText);
         
+        
+        Label startLabel = new Label("Great Job!, " + username);
+        task1Label.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
+
+        task2Label.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
+
+        task3Label.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
+
         Button startButton = new Button("Get Started");
 
         startButton.setOnAction(e -> {
             if (userOrientationStage != null) {
                 userOrientationStage.close();
             }
-            
+
             primaryStage.show();
         });
 
+        root.getChildren().addAll(
+                welcomeLabel, completedTasksLabel, task1Label, task2Label, task3Label, projectInfoLabel, 
+                storyPointsLabel, startLabel, startButton);
+    }
 
-        root.getChildren().addAll(welcomeLabel, projectInfoLabel, storyPointsLabel, startButton);
+    
+    private boolean isValidUsername(String username) {
+        return !username.isEmpty() && !username.contains("@");
+    }
+
+    private boolean isValidPassword(String password) {
+        return !password.isEmpty();
+    }
+    
+    private void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public static void main(String[] args) {

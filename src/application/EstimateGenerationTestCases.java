@@ -14,7 +14,8 @@
  * planningPokerManager = new PlanningPokerManager(database);
  * ArrayList<EffortLog> logs; public final int STORY_POINTS_PER_HOUR = 60;
  * 
- * public int calculate() { logs = planningPokerManager.getEffortLogs(); return
+ * public int calculate() { logs =
+ * planningPokerManager.getEffortLogs(database.getProject(0)); return
  * planningPokerManager.calculateAverage(logs, STORY_POINTS_PER_HOUR); }
  * 
  * // No logs
