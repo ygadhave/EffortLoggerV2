@@ -64,8 +64,8 @@ public class OnboardingPrototype extends Application {
     }
 
     public void calculateStoryPoints(EffortLog log, int pointsPerHour) {
-        int hours = log.getHours();
-        int minutes = log.getMinutes();
+        int hours = log.getEffortHours();
+        int minutes = log.getEffortMinutes();
         int points = (hours * pointsPerHour) + (minutes * (pointsPerHour / 60));
         log.setStoryPoints(points);
     }

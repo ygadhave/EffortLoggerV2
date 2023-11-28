@@ -64,10 +64,11 @@ public class PlanningPokerProjectInfoWindow extends VBox {
 		this.getChildren().addAll(userStoryDescriptionLabel, userStoryDescriptionArea, saveChangesButton);
 	}
 	
-	// Handles clicking the update project info button
+	// Handles updating the project dropdown
 	private class ProjectsDropdownHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
 			try {
+				System.out.println("Project selected: " + projectsDropdown.getValue());
 				selectedProject = projectsDropdown.getValue();
 				userStoryNameField.setText(selectedProject.getUserStoryName());
 				userStoryDescriptionArea.setText(selectedProject.getUserStoryDescription());

@@ -115,8 +115,8 @@ public class PlanningPokerManager {
 	// Function to calculate the story points for an effort log
 	public void calculateEffortPoints(EffortLog log, int pointsPerHour, int index) {
 		// Calculate the unweighted and unbiased story points value
-		int hours = log.getHours();
-		int minutes = log.getMinutes();
+		int hours = log.getEffortHours();
+		int minutes = log.getEffortMinutes();
 		int logPoints = (hours * pointsPerHour) + (minutes * (pointsPerHour / 60));
 		
 		// Weight the base story points value

@@ -75,7 +75,7 @@ public class PlanningPokerPane extends VBox {
 		storyPointsField = new TextField("60");
 		
 		viewerButtons = new HBox();
-		refreshButton = new Button("Refresh Effort Log List");
+		refreshButton = new Button("Refresh Log Lists");
 		saveSettingsButton = new Button("Save Settings");
 		viewerButtons.getChildren().addAll(refreshButton, saveSettingsButton);
 		
@@ -172,8 +172,8 @@ public class PlanningPokerPane extends VBox {
 			HBox effortLogDisplay = new HBox();
 			
 			// Get effort data from the log
-			int hours = newLogList.get(i).getHours();
-			int minutes = newLogList.get(i).getMinutes();
+			int hours = newLogList.get(i).getEffortHours();
+			int minutes = newLogList.get(i).getEffortMinutes();
 			double weight = newLogList.get(i).getWeight();
 			int bias = newLogList.get(i).getBias();
 			boolean selected = newLogList.get(i).getSelected();

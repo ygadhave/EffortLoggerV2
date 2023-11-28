@@ -69,7 +69,7 @@ public class LogGenerationTestCases {
             }
         } else {
             for (EffortLog log : logs) {
-                output.append("Hours: " + log.getHours() + ", Minutes: " + log.getMinutes() + ", Weight: " + log.getWeight() + ", Bias: " + log.getBias() + ", Story Points: " + log.getStoryPoints() + "\\n");
+                output.append("Hours: " + log.getEffortHours() + ", Minutes: " + log.getEffortMinutes() + ", Weight: " + log.getWeight() + ", Bias: " + log.getBias() + ", Story Points: " + log.getStoryPoints() + "\\n");
             }
         }
         return output.toString();

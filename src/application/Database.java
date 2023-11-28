@@ -16,7 +16,6 @@ public class Database implements Serializable {
 	// Effort logs list
 	private ArrayList<Project> projects;
 	private ArrayList<Definitions> definitions;
-	private ArrayList<EffortLog> effortlog;
     private int projectCount = 0;
     private Map<String, Account> accounts = new HashMap<>();
     private AtomicInteger accountIdCounter = new AtomicInteger(0);
@@ -24,7 +23,6 @@ public class Database implements Serializable {
 	public Database() {
 		projects = new ArrayList<Project>();
 		definitions = new ArrayList<Definitions>();
-		effortlog = new ArrayList<EffortLog>();
 	}
 	
 	public ArrayList<Project> getProjects() {

@@ -26,19 +26,33 @@ public class AuthenticationPane extends VBox {
     private Label lblAccountInfo = new Label("");
     private Consumer<Account> visibilityUpdater;
     private Runnable logoutHandler;
+    
+	// Onboarding
+	private Button onboardingButton;
+	private OnboardingPrototype onboardingPrototype;
+    
     // Modified to flag when a logout is in progress to prevent recursive calls
     private boolean isLoggingOut = false;
 
-    public AuthenticationPane(AuthenticationManager manager, Consumer<Account> visibilityUpdater) {
+    public AuthenticationPane(AuthenticationManager manager, Consumer<Account> visibilityUpdater, Stage primaryStage) {
         this.manager = manager;
         this.visibilityUpdater = visibilityUpdater;
-        initializeUI();
+        initializeUI(primaryStage);
     }
 
-    private void initializeUI() {
+    private void initializeUI(Stage primaryStage) {
+    	// ----------Yashwhat's Code----------
+		// Setup the user orientation button
+	    onboardingButton = new Button("User Orientation Prototype");
+	    onboardingButton.setOnAction(e -> {
+	        onboardingPrototype = new OnboardingPrototype(primaryStage);
+	        Stage userOrientationStage = new Stage();
+	        onboardingPrototype.start(userOrientationStage);
+	    });
+    	
         setAlignment(Pos.CENTER);
         setSpacing(10);
-        getChildren().addAll(btnRegister, btnLogin);
+        getChildren().addAll(btnRegister, btnLogin, onboardingButton);
 
         btnRegister.setOnAction(e -> register());
         btnLogin.setOnAction(e -> login());

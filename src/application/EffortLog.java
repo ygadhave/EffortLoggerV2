@@ -51,11 +51,11 @@ public class EffortLog implements Serializable {
 		effortMinutes = minutes;
 	}
 	
-	public int getHours() {
+	public int getEffortHours() {
 		return effortHours;
 	}
 	
-	public int getMinutes() {
+	public int getEffortMinutes() {
 		return effortMinutes;
 	}
 	

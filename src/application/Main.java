@@ -38,9 +38,9 @@ public class Main extends Application {
 	private DefectManager defectManager;
 	
 	// Effort Log Viewer Tab
-	private Tab logsTab;
-	private LogsPane logsPane;
-	private LogsManager logsManager;
+	private Tab viewerTab;
+	private ViewerPane viewerPane;
+	private ViewerManager viewerManager;
 	
 	// Definitions Tab
 	private Tab definitionsTab;
@@ -52,13 +52,9 @@ public class Main extends Application {
 	private PlanningPokerPane planningPokerPane;
 	private PlanningPokerManager planningPokerManager;
 	
-	// User Interface Tab
-	private Tab userInterfacePrototypeTab;
-	private UserInterfacePrototype userInterfacePrototype;
-	
-	// Onboarding Tab
-	private Button onboardingButton;
-	private OnboardingPrototype onboardingPrototype;
+	// User Interface Prototype Tab
+	// private Tab userInterfacePrototypeTab;
+	// private UserInterfacePrototype userInterfacePrototype;
 	
 	// ----------Troy's Code----------
 	// Authentication Tab
@@ -120,11 +116,11 @@ public class Main extends Application {
 			defectPane = new DefectPane(defectManager, database);
 			defectTab.setContent(defectPane);
 			
-			// Setup the logs tab
-			logsTab = new Tab("Logs");
-			logsManager = new LogsManager(database);
-			logsPane = new LogsPane(logsManager);
-			logsTab.setContent(logsPane);
+			// Setup the viewer tab
+			viewerTab = new Tab("Log Viewer");
+			viewerManager = new ViewerManager(database);
+			viewerPane = new ViewerPane(viewerManager);
+			viewerTab.setContent(viewerPane);
 			
 			// Setup the definitions tab
 			definitionsTab = new Tab("Definitions");
@@ -146,7 +142,7 @@ public class Main extends Application {
             // Setup authentication tab
             authenticationTab = new Tab("Authentication");
             authenticationManager = new AuthenticationManager(database);
-            authenticationPane = new AuthenticationPane(authenticationManager, this::updateTabVisibility);
+            authenticationPane = new AuthenticationPane(authenticationManager, this::updateTabVisibility, primaryStage);
             authenticationTab.setContent(authenticationPane);
             
             authenticationPane.setLogoutHandler(() -> {
@@ -160,7 +156,13 @@ public class Main extends Application {
 			// Check if the user enters or exits the Planning Poker Tab
 			root.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
 			    // If the user is entering the Planning Poker Tab, refresh the effort log list
-				if ((int)newValue == 6) {
+				if ((int)newValue == 4) {
+					System.out.println("Entering Log Viewer Tab");
+					viewerPane.updateProjectsDropdown();
+					viewerPane.updateTables(viewerPane.getSelectedProject());
+				}
+				else if ((int)newValue == 6) {
+					System.out.println("Entering Planning Poker Tab");
 					planningPokerPane.updateEffortListArea(planningPokerPane.getSelectedProject());
 					planningPokerPane.updateDefectListArea(planningPokerPane.getSelectedProject());
 				}
@@ -172,21 +174,11 @@ public class Main extends Application {
 			});
 			
 			// Setup the main scene
-			Scene scene = new Scene(root,400,400);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			Scene mainScene = new Scene(root,800,600);
+			mainScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
-			// ----------Yashwhat's Code----------
-			// Setup the user orientation button
-		    onboardingButton = new Button("User Orientation");
-		    onboardingButton.setOnAction(e -> {
-		        onboardingPrototype = new OnboardingPrototype(primaryStage);
-		        Stage userOrientationStage = new Stage();
-		        onboardingPrototype.start(userOrientationStage);
-		    });
-
 		    // Add the user orientation button
-		    VBox mainContainer = new VBox(root, onboardingButton);
-		    Scene mainScene = new Scene(mainContainer, 800, 600);
+		    //Scene mainScene = new Scene(root, 800, 600);
 		    // ----------------------------------
 		    
             // Setup the AFK Timer
@@ -258,7 +250,7 @@ public class Main extends Application {
             if (privilege == 0) {
                 root.getTabs().add(planningPokerTab);
             } else if (privilege == 1 || privilege == 2) {
-                root.getTabs().addAll(consoleTab, editorTab, defectTab, logsTab, definitionsTab, planningPokerTab);
+                root.getTabs().addAll(consoleTab, editorTab, defectTab, viewerTab, definitionsTab, planningPokerTab);
             }
         }
 
