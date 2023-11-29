@@ -10,7 +10,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 
-//written by Jaylene Nunez
+//Written by Jaylene Nunez
+
 public class ConsolePane extends VBox {
 
     private ConsoleManager manager;
@@ -116,9 +117,31 @@ public class ConsolePane extends VBox {
                 remainingTimeLabel.setText(String.format("Elapsed Time: %02d:%03d", seconds, milliseconds));
                 resultText.setText("Clock stopped.");
                 resultText.setStyle("-fx-font-size: 20px; -fx-background-color: red;");
+
+                // Create a new effort log when the clock is stopped
+                createNewEffortLog(seconds, milliseconds);
             } else {
                 resultText.setText("Clock is not running.");
                 resultText.setStyle("-fx-font-size: 20px; -fx-background-color: red;");
+            }
+        }
+     // Create a new effort log
+        private void createNewEffortLog(long seconds, long milliseconds) {
+            if (manager.getSelectedProject() != null) {
+                // Convert seconds and milliseconds to hours and minutes
+                int hours = (int) (seconds / 3600);
+                int minutes = (int) ((seconds % 3600) / 60);
+
+                // Call the createNewEffortLog method in ConsoleManager
+                boolean logCreated = manager.createNewEffortLog(hours, minutes);
+
+                if (logCreated) {
+                    resultText.setText("Effort log created.");
+                    resultText.setStyle("-fx-font-size: 20px; -fx-background-color: green;");
+                } else {
+                    resultText.setText("Failed to create effort log. No project selected.");
+                    resultText.setStyle("-fx-font-size: 20px; -fx-background-color: red;");
+                }
             }
         }
     }
