@@ -201,6 +201,14 @@ public class DefinitionsPane extends VBox {
     }
 
     private void addProject() {
+        if (manager.getProjects().size() == 10) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Add Project");
+            alert.setHeaderText("Error");
+            alert.setContentText("You can't add a project if there's already ten projects!");
+            alert.showAndWait();
+            return;
+        }
         // Add a new blank Project named "New Project"
         Project newProject = new Project("New Project");
         manager.addProject(newProject);
@@ -274,6 +282,14 @@ public class DefinitionsPane extends VBox {
     // Delete a project
     private void deleteProject() {
         Project selectedProject = projectsTable.getSelectionModel().getSelectedItem();
+        if (manager.getProjects().size() == 1) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Delete Project");
+            alert.setHeaderText("Error");
+            alert.setContentText("You can't delete a project if there's only one left!");
+            alert.showAndWait();
+            return;
+        }
         if (selectedProject != null) {
             Alert confirmDialog = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this project?", ButtonType.YES, ButtonType.NO);
             confirmDialog.showAndWait().ifPresent(response -> {
