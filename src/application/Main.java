@@ -191,6 +191,7 @@ public class Main extends Application {
 
             // Show the scene
             primaryStage.setScene(mainScene);
+            primaryStage.setTitle("EffortLogger V2");
             primaryStage.show();
            
         } catch(Exception e) {
