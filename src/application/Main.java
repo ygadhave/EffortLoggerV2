@@ -174,15 +174,14 @@ public class Main extends Application {
 			
 			// ----------Yashwhat's Code----------
 			// Setup the user orientation button
-		    onboardingButton = new Button("User Orientation");
-		    onboardingButton.setOnAction(e -> {
-		        onboardingPrototype = new OnboardingPrototype(primaryStage);
-		        Stage userOrientationStage = new Stage();
-		        onboardingPrototype.start(userOrientationStage);
-		    });
+		    //onboardingButton = new Button("User Orientation");
+		    //onboardingButton.setOnAction(e -> {
+		    //    onboardingPrototype = new OnboardingPrototype(primaryStage);
+		    //    Stage userOrientationStage = new Stage();
+		    //    onboardingPrototype.start(userOrientationStage);
+		    //});
 
-		    // Add the user orientation button
-		    VBox mainContainer = new VBox(root, onboardingButton);
+		    VBox mainContainer = new VBox(root);
 		    Scene mainScene = new Scene(mainContainer, 800, 600);
 		    // ----------------------------------
 		    
