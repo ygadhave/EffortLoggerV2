@@ -169,16 +169,16 @@ public class DefinitionsPane extends VBox {
         deliverableComboBox.getItems().clear();
         switch (effortCategoryComboBox.getValue()) {
             case "Plans":
-                deliverableComboBox.getItems().addAll("Project Plan", "Risk Management Plan");
+                deliverableComboBox.getItems().addAll("Project Plan", "Risk Management Plan", "Conceptual Design Plan", "Detailed Design Plan", "Implementation Plan");
                 break;
             case "Documents":
-                deliverableComboBox.getItems().addAll("Conceptual Design", "Detailed Design");
+                deliverableComboBox.getItems().addAll("Conceptual Design", "Detailed Design", "Test Cases", "Solution", "Reflection", "Outline", "Draft", "Report", "User Defined", "Other");
                 break;
             case "Interruptions":
-                deliverableComboBox.getItems().addAll("Break", "Phone");
+                deliverableComboBox.getItems().addAll("Break", "Phone", "Teammate", "Visitor", "Other");
                 break;
             case "Defects":
-                deliverableComboBox.getItems().addAll("10 Documentation", "20 Syntax");
+                deliverableComboBox.getItems().addAll("Not Specified", "10 Documentation", "20 Syntax", "30 Build, Package", "40 Assignment", "50 Interface", "60 Checking", "70 Data", "80 Function", "90 System", "100 Environment");
                 break;
             case "Others":
                 // No deliverables for Others
