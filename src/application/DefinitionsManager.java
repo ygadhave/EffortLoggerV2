@@ -10,10 +10,6 @@ public class DefinitionsManager {
 
     public DefinitionsManager(Database d) {
         database = d;
-        
-        // create a default definition for example
-        Definitions defaultDefinition = new Definitions("Default Cycle", "Plans", "Project Plan");
-        database.addDefinition(defaultDefinition);
     }
     
     public void addProject(Project project) {

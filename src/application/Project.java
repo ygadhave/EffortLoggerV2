@@ -29,8 +29,9 @@ public class Project implements Serializable {
         lifeCycleSteps = new ArrayList<>();
         lifeCycleDefinitions = new HashMap<>();
         // Initialize with some default steps for demonstration
-        lifeCycleSteps.add("Step 1");
-        lifeCycleSteps.add("Step 2");
+        for (int i = 1; i < 26; i++) {
+        	lifeCycleSteps.add("Step " + i);
+        }
         // ... add other steps as needed
 	}
 	
@@ -44,9 +45,9 @@ public class Project implements Serializable {
         lifeCycleSteps = new ArrayList<>();
         lifeCycleDefinitions = new HashMap<>();
         // Initialize with some default steps for demonstration
-        lifeCycleSteps.add("Step 1");
-        lifeCycleSteps.add("Step 2");
-        // ... add other steps as needed
+        for (int i = 1; i < 26; i++) {
+        	lifeCycleSteps.add("Step " + i);
+        }
 	}
 	
 	public Project(String name, String storyName, String storyDesc) {
@@ -59,9 +60,9 @@ public class Project implements Serializable {
         lifeCycleSteps = new ArrayList<>();
         lifeCycleDefinitions = new HashMap<>();
         // Initialize with some default steps for demonstration
-        lifeCycleSteps.add("Step 1");
-        lifeCycleSteps.add("Step 2");
-        // ... add other steps as needed
+        for (int i = 1; i < 26; i++) {
+        	lifeCycleSteps.add("Step " + i);
+        }
 	}
 	
 	public String getProjectName() {

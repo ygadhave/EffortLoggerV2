@@ -164,9 +164,17 @@ public class Database implements Serializable {
                 return (Database) in.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-                return new Database(); // Return a new instance if load fails
+                Database d = new Database();
+                d.addProject(new Project("Default Project"));
+                Definitions defaultDefinition = new Definitions("Default Cycle", "Plans", "Project Plan");
+                d.addDefinition(defaultDefinition);
+                return d; // Return a new instance if load fails
             }
         }
-        return new Database();
+        Database d = new Database();
+        d.addProject(new Project("Default Project"));
+        Definitions defaultDefinition = new Definitions("Default Cycle", "Plans", "Project Plan");
+        d.addDefinition(defaultDefinition);
+        return d;
     }
 }

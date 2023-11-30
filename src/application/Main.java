@@ -99,9 +99,6 @@ public class Main extends Application {
 			//       be modified to fit the user's ends. These 10 will be created when the user
 			//       first boots up the program and all be empty.
 			
-			// Create a single test project
-			database.addProject(new Project("Default Project"));
-			
 			// Setup the console tab
 			consoleTab = new Tab("Effort Console");
 			consoleManager = new ConsoleManager(database);
