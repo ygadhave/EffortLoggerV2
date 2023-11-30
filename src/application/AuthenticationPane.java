@@ -22,7 +22,7 @@ public class AuthenticationPane extends VBox {
     private Button btnRegister = new Button("Register");
     private Button btnLogin = new Button("Login");
     private Button btnLogout = new Button("Logout");
-    private Button btnTest = new Button("Test");
+    private Button btnTest = new Button("Role Info");
     private Label lblAccountInfo = new Label("");
     private Consumer<Account> visibilityUpdater;
     private Runnable logoutHandler;
@@ -170,13 +170,13 @@ public class AuthenticationPane extends VBox {
         } else {
             switch (loggedInAccount.getPrivilege()) {
                 case 0:
-                    message = "You're a guest, so you're not authorized to use this test.";
+                    message = "You're a guest, so your access is limited.";
                     break;
                 case 1:
-                    message = "You're a worker, so you have authorization to use this test. Congratulations!";
+                    message = "You're a worker, so you have access to most features.";
                     break;
                 case 2:
-                    message = "You're an admin, so you have authorization to use this test. Congratulations!";
+                    message = "You're an admin, so you have full access.";
                     break;
                 default:
                     message = "Unknown privilege level.";
@@ -184,8 +184,8 @@ public class AuthenticationPane extends VBox {
         }
 
         Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Test");
-        alert.setHeaderText("Test Result");
+        alert.setTitle("Role");
+        alert.setHeaderText("Information");
         alert.setContentText(message);
         alert.showAndWait();
         
