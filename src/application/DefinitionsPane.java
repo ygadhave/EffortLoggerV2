@@ -117,6 +117,7 @@ public class DefinitionsPane extends VBox {
     }
 
     private void addDefinition() {
+    	Main.getInstance().resetAfkTimer();
         // Add a new blank Defined Life Cycle named "New Cycle"
         manager.addDefinition(new Definitions());
         // Refresh the table
@@ -124,6 +125,7 @@ public class DefinitionsPane extends VBox {
     }
 
     private void editDefinition() {
+    	Main.getInstance().resetAfkTimer();
         Definitions selectedDefinition = definitionsTable.getSelectionModel().getSelectedItem();
         // Check to see if a definition is selected
         if (selectedDefinition != null) {
@@ -188,6 +190,7 @@ public class DefinitionsPane extends VBox {
 
     // Delete a definition
     private void deleteDefinition() {
+    	Main.getInstance().resetAfkTimer();
         Definitions selectedDefinition = definitionsTable.getSelectionModel().getSelectedItem();
         if (selectedDefinition != null) {
             Alert confirmDialog = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this definition?", ButtonType.YES, ButtonType.NO);
@@ -201,6 +204,7 @@ public class DefinitionsPane extends VBox {
     }
 
     private void addProject() {
+    	Main.getInstance().resetAfkTimer();
         if (manager.getProjects().size() == 10) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Add Project");
@@ -217,6 +221,7 @@ public class DefinitionsPane extends VBox {
 
     // Edit a project
     private void editProject() {
+    	Main.getInstance().resetAfkTimer();
         Project selectedProject = projectsTable.getSelectionModel().getSelectedItem();
         // Is a project selected?
         if (selectedProject != null) {
@@ -281,6 +286,7 @@ public class DefinitionsPane extends VBox {
 
     // Delete a project
     private void deleteProject() {
+    	Main.getInstance().resetAfkTimer();
         Project selectedProject = projectsTable.getSelectionModel().getSelectedItem();
         if (manager.getProjects().size() == 1) {
             Alert alert = new Alert(AlertType.ERROR);

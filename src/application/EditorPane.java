@@ -140,6 +140,7 @@ public class EditorPane extends VBox {
 
 
     private void handleUpdateEntry() {
+    	Main.getInstance().resetAfkTimer();
         EffortLog selectedLog = effortLogEntryComboBox.getValue();
         Project selectedProject = projectComboBox.getValue();
 
@@ -162,6 +163,7 @@ public class EditorPane extends VBox {
     }
 
     private void handleDeleteEntry() {
+    	Main.getInstance().resetAfkTimer();
         EffortLog selectedLog = effortLogEntryComboBox.getValue();
         Project selectedProject = projectComboBox.getValue();
 
@@ -176,6 +178,7 @@ public class EditorPane extends VBox {
     }
 
     private void handleSplitEntry() {
+    	Main.getInstance().resetAfkTimer();
         EffortLog originalLog = effortLogEntryComboBox.getValue();
         Project selectedProject = projectComboBox.getValue();
 
@@ -215,8 +218,7 @@ public class EditorPane extends VBox {
             return null;
         }
     }
-
-
+  
 	private void handleClearLog() {
         Project selectedProject = projectComboBox.getValue();
 
@@ -228,10 +230,10 @@ public class EditorPane extends VBox {
         } else {
             warningText.setText("No project selected.");
         }
-    }
-
+  }
 
     private void clearFields() {
+    	Main.getInstance().resetAfkTimer();
 
         dateTextField.clear();
         startTimeTextField.clear();

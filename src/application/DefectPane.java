@@ -238,6 +238,7 @@ public class DefectPane extends BorderPane {
     }
         
     public void createDefectLog() {
+    	Main.getInstance().resetAfkTimer();
         Project selectedProject = projectComboBox.getValue();
         if (selectedProject != null) {
             DefectLog newDefect = new DefectLog();
@@ -263,6 +264,7 @@ public class DefectPane extends BorderPane {
     }
 
     public void clearDefectInputFields() {
+    	Main.getInstance().resetAfkTimer();
         defectNameField.clear();
         defectCategoryComboBox.getSelectionModel().clearSelection();
         stepWhenInjectedComboBox.getSelectionModel().clearSelection();
@@ -276,6 +278,7 @@ public class DefectPane extends BorderPane {
     
     
     public void updateDefectLog() {
+    	Main.getInstance().resetAfkTimer();
         DefectLog selectedDefect = defectComboBox.getValue();
         Project currentProject = projectComboBox.getValue();
 
@@ -304,6 +307,7 @@ public class DefectPane extends BorderPane {
     
 
     private void clearDefects() {
+    	Main.getInstance().resetAfkTimer();
         defectComboBox.getSelectionModel().clearSelection();
         defectCategoryComboBox.getSelectionModel().clearSelection();
         stepWhenInjectedComboBox.getSelectionModel().clearSelection();
@@ -316,6 +320,7 @@ public class DefectPane extends BorderPane {
 
 
     private void deleteDefect() {
+    	Main.getInstance().resetAfkTimer();
         DefectLog selectedDefect = defectComboBox.getValue();
         if (selectedDefect != null) {
             Project selectedProject = projectComboBox.getValue();
@@ -337,6 +342,7 @@ public class DefectPane extends BorderPane {
     }
 
     private void toggleDefectStatus(boolean isClosed) {
+    	Main.getInstance().resetAfkTimer();
         DefectLog selectedDefect = defectComboBox.getValue();
         Project selectedProject = projectComboBox.getValue();
         if (selectedDefect != null && selectedProject != null) {
