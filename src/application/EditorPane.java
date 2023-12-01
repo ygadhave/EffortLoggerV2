@@ -1,6 +1,11 @@
 // EditorPane.java
 package application;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -8,7 +13,8 @@ import javafx.scene.text.Text;
 
 public class EditorPane extends VBox {
     private EditorManager manager;
-
+    private TabPane tabPane;
+    private Tab consoleTab;
     private ComboBox<Project> projectComboBox;
     private ComboBox<EffortLog> effortLogEntryComboBox;
     private TextField dateTextField;
@@ -25,10 +31,54 @@ public class EditorPane extends VBox {
     private Button toConsoleButton;
     private Text warningText;
 
-    public EditorPane(EditorManager m) {
-        manager = m;
+    public EditorPane(EditorManager m, TabPane tabPane, Tab consoleTab) {
+        this.manager = m;
+        this.tabPane = tabPane;
+        this.consoleTab = consoleTab;
         initializeUI();
     }
+  
+
+	public void loadData() {
+        loadProjectData();
+        loadLifeCycleStepData();
+        loadEffortCategoryData();
+        loadEffortPlan();
+    }
+    
+    private void loadProjectData() {
+        List<Project> projects = manager.getProjects();
+        projectComboBox.getItems().setAll(projects);
+
+        projectComboBox.valueProperty().addListener((obs, oldVal, newVal) -> loadEffortLogData(newVal));
+    }
+    
+    private void loadEffortLogData(Project project) {
+        if (project != null) {
+            List<EffortLog> effortLogs = manager.getEffortLogs(project);
+            effortLogEntryComboBox.getItems().clear();
+            effortLogEntryComboBox.getItems().addAll(effortLogs);
+        }
+    }
+    
+    private void loadLifeCycleStepData() {
+
+        List<String> lifeCycleSteps = manager.getLifeCycleSteps();
+        lifeCycleStepComboBox.getItems().setAll(lifeCycleSteps);
+    }
+
+    private void loadEffortCategoryData() {
+        // Assuming you have a method in EditorManager for this
+        List<String> effortCategories = manager.getEffortCategories();
+        effortCategoryComboBox.getItems().setAll(effortCategories);
+    }
+    
+    private void loadEffortPlan() {
+        // Assuming you have a method in EditorManager for this
+        List<String> effortPlan = manager.getEffortPlan();
+        subordinateSelectListComboBox.getItems().setAll(effortPlan);
+    }
+    
 
     private void initializeUI() {
 
@@ -64,7 +114,7 @@ public class EditorPane extends VBox {
                 new Label("Stop Time: "), stopTimeTextField,
                 new Label("Life Cycle Step: "), lifeCycleStepComboBox,
                 new Label("Effort Category: "), effortCategoryComboBox,
-                new Label("Subordinate Select List: "), subordinateSelectListComboBox,
+                new Label("Plan: "), subordinateSelectListComboBox,
                 new Label("Other Details / User Defined Details: "), otherDetailsTextField
         );
 
@@ -81,16 +131,33 @@ public class EditorPane extends VBox {
         setSpacing(10);
         setPadding(new Insets(10));
     }
+    
+    private void handleToConsole() {
+        if (tabPane != null && consoleTab != null) {
+            tabPane.getSelectionModel().select(consoleTab);
+        }
+    }
+
 
     private void handleUpdateEntry() {
         EffortLog selectedLog = effortLogEntryComboBox.getValue();
         Project selectedProject = projectComboBox.getValue();
-        EffortLog updatedLog = createEffortLogFromFields();
 
-        if (selectedProject != null && selectedLog != null && updatedLog != null) {
-            manager.updateEffortLogEntry(selectedLog, updatedLog, selectedProject);
-            clearFields();
+        if (selectedLog != null && selectedProject != null) {
+            try {
 
+                selectedLog.setStartTime(startTimeTextField.getText());
+                selectedLog.setStopTime(stopTimeTextField.getText());
+                selectedLog.setLifeCycleStep(lifeCycleStepComboBox.getValue());
+                selectedLog.setEffortCategory(effortCategoryComboBox.getValue());
+
+                manager.updateEffortLogEntry(selectedLog, selectedLog, selectedProject); 
+                warningText.setText("Entry updated successfully.");
+            } catch (Exception e) {
+                warningText.setText("Error updating entry: " + e.getMessage());
+            }
+        } else {
+            warningText.setText("No project or log entry selected.");
         }
     }
 
@@ -100,8 +167,11 @@ public class EditorPane extends VBox {
 
         if (selectedLog != null && selectedProject != null) {
             manager.deleteEntry(selectedLog);
+            loadEffortLogData(selectedProject); 
+            warningText.setText("Entry deleted successfully.");
             clearFields();
-
+        } else {
+            warningText.setText("No project or log entry selected.");
         }
     }
 
@@ -110,33 +180,56 @@ public class EditorPane extends VBox {
         Project selectedProject = projectComboBox.getValue();
 
         if (originalLog != null && selectedProject != null) {
-            manager.splitEffortLogEntry(originalLog, selectedProject);
-            clearFields();
-
+            String midPointTime = calculateMidPoint(originalLog);
+            if (midPointTime != null) {
+                manager.splitEffortLogEntry(originalLog, midPointTime, selectedProject);
+                loadEffortLogData(selectedProject);
+                warningText.setText("Entry split successfully.");
+            } else {
+                warningText.setText("Invalid start or stop time. Cannot calculate midpoint.");
+            }
+        } else {
+            warningText.setText("No project or log entry selected.");
         }
     }
 
-    private void handleClearLog() {
+
+
+    private String calculateMidPoint(EffortLog log) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        String startTimeStr = log.getStartTime();
+        String stopTimeStr = log.getStopTime();
+
+        if (startTimeStr == null || startTimeStr.isEmpty() || stopTimeStr == null || stopTimeStr.isEmpty()) {
+            return null;
+        }
+
+        try {
+            Date startDate = sdf.parse(startTimeStr);
+            Date stopDate = sdf.parse(stopTimeStr);
+
+            long midpointMillis = startDate.getTime() + (stopDate.getTime() - startDate.getTime()) / 2;
+            return sdf.format(new Date(midpointMillis));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+	private void handleClearLog() {
         Project selectedProject = projectComboBox.getValue();
 
         if (selectedProject != null) {
             manager.clearLog(selectedProject);
+            loadEffortLogData(selectedProject);
+            warningText.setText("Effort log cleared successfully.");
             clearFields();
+        } else {
+            warningText.setText("No project selected.");
         }
     }
 
-    private void handleToConsole() {
-        manager.navigateToConsole();
-    }
-
-    private EffortLog createEffortLogFromFields() {
-       
-        EffortLog newLog = new EffortLog();
-        newLog.setStartTime(startTimeTextField.getText());
-        newLog.setStopTime(stopTimeTextField.getText());
-
-        return newLog;
-    }
 
     private void clearFields() {
 
