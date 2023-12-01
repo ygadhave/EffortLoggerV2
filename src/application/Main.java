@@ -1,9 +1,7 @@
 package application;
 
-import java.util.ArrayList;
 	
 import java.util.Timer;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -11,8 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-
-import java.util.Timer;
 import java.util.TimerTask;
 
 // Main class written by Donovan Harp, Yashwhat Gadhave, and Troy Reiling
@@ -51,10 +47,6 @@ public class Main extends Application {
 	private Tab planningPokerTab;
 	private PlanningPokerPane planningPokerPane;
 	private PlanningPokerManager planningPokerManager;
-	
-	// User Interface Tab
-	private Tab userInterfacePrototypeTab;
-	private UserInterfacePrototype userInterfacePrototype;
 	
 	// Onboarding Tab
 	private Button onboardingButton;
@@ -108,7 +100,8 @@ public class Main extends Application {
 			// Setup the editor tab
 			editorTab = new Tab("Effort Log Editor");
 			editorManager = new EditorManager(database);
-			editorPane = new EditorPane(editorManager);
+			editorPane = new EditorPane(editorManager, root, consoleTab);
+			editorPane.loadData();
 			editorTab.setContent(editorPane);
 			
 			// Setup the defect tab
@@ -174,14 +167,15 @@ public class Main extends Application {
 			
 			// ----------Yashwhat's Code----------
 			// Setup the user orientation button
-		    //onboardingButton = new Button("User Orientation");
-		    //onboardingButton.setOnAction(e -> {
-		    //    onboardingPrototype = new OnboardingPrototype(primaryStage);
-		    //    Stage userOrientationStage = new Stage();
-		    //    onboardingPrototype.start(userOrientationStage);
-		    //});
+		    onboardingButton = new Button("User Orientation");
+		    onboardingButton.setOnAction(e -> {
+		        onboardingPrototype = new OnboardingPrototype(primaryStage);
+		        Stage userOrientationStage = new Stage();
+		        onboardingPrototype.start(userOrientationStage);
+		    });
 
-		    VBox mainContainer = new VBox(root);
+		    // Add the user orientation button
+		    VBox mainContainer = new VBox(root, onboardingButton);
 		    Scene mainScene = new Scene(mainContainer, 800, 600);
 		    // ----------------------------------
 		    

@@ -15,6 +15,9 @@ public class EffortLog implements Serializable {
 	private Definitions definitions;
 	private String startTime;
     private String stopTime;
+    private String lifeCycleStep;
+    private String effortCategory;
+
 	
 	// Default Constructor
 	public EffortLog() {
@@ -45,6 +48,24 @@ public class EffortLog implements Serializable {
 		storyPoints = -1;
 		selected = true;
 	}
+	
+	public void setLifeCycleStep(String lifeCycleStep) {
+        this.lifeCycleStep = lifeCycleStep;
+    }
+
+    // Setter for effortCategory
+    public void setEffortCategory(String effortCategory) {
+        this.effortCategory = effortCategory;
+    }
+
+    // Optionally, add getters if needed
+    public String getLifeCycleStep() {
+        return lifeCycleStep;
+    }
+
+    public String getEffortCategory() {
+        return effortCategory;
+    }
 	
 	public void setTime(int hours, int minutes) {
 		effortHours = hours;
@@ -100,22 +121,31 @@ public class EffortLog implements Serializable {
 	}
 	
 	public void setStartTime(String startTime) {
-        // You may want to perform additional validation here
         this.startTime = startTime;
     }
 	
-	// Get start time
+
     public String getStartTime() {
         return startTime;
     }
 
-    // Set stop time
+
     public void setStopTime(String stopTime) {
-        // You may want to perform additional validation here
+ 
         this.stopTime = stopTime;
     }
     
     public String getStopTime() {
         return stopTime;
     }
+    
+	public void copyPropertiesFrom(EffortLog other) {
+	  
+	    this.setStartTime(other.getStartTime());
+	    this.setStopTime(other.getStopTime());
+	    this.setLifeCycleStep(other.getLifeCycleStep());
+	    this.setEffortCategory(other.getEffortCategory());   
+	}
+	
+
 }
