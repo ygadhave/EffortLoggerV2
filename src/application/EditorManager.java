@@ -6,9 +6,27 @@ import java.util.List;
 
 public class EditorManager {
 	private Database database;
-
+	private EditorPane editorPane;
+	
     public EditorManager(Database d) {
         this.database = d;
+    }
+
+    // Method to set reference to EditorPane
+    public void setEditorPane(EditorPane editorPane) {
+        this.editorPane = editorPane;
+    }
+
+    // Call this method whenever you update projects or logs
+    private void refreshEditorPane() {
+        if (editorPane != null) {
+            editorPane.refreshProjectData();
+        }
+    }
+
+    public void addProject(Project project) {
+        database.addProject(project);
+        refreshEditorPane(); // Refresh EditorPane
     }
 
 	public void updateEffortLogEntry(EffortLog oldEntry, EffortLog newEntry, Project project) {
