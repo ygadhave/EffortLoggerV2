@@ -213,7 +213,7 @@ public class Main extends Application {
 	                }
 	            });
 	        }
-	    }, 500 * 60 * 1000); // 5 minutes in milliseconds, temp set to 500
+	    }, 5 * 60 * 1000); // 5 minutes in milliseconds
 	}
 
     private void logoutUser() {

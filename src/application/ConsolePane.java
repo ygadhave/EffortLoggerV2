@@ -127,6 +127,7 @@ public class ConsolePane extends VBox {
         }
      // Create a new effort log
         private void createNewEffortLog(long seconds, long milliseconds) {
+        	Main.getInstance().resetAfkTimer();
             if (manager.getSelectedProject() != null) {
                 // Convert seconds and milliseconds to hours and minutes
                 int hours = (int) (seconds / 3600);
@@ -148,6 +149,7 @@ public class ConsolePane extends VBox {
 
     // Create new project
     private void createNewProject(ComboBox<Project> comboBox1) {
+    	Main.getInstance().resetAfkTimer();
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("New Project");
         dialog.setHeaderText(null);

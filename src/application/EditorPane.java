@@ -83,6 +83,7 @@ public class EditorPane extends VBox {
     }
 
     private void handleUpdateEntry() {
+    	Main.getInstance().resetAfkTimer();
         EffortLog selectedLog = effortLogEntryComboBox.getValue();
         Project selectedProject = projectComboBox.getValue();
         EffortLog updatedLog = createEffortLogFromFields();
@@ -95,6 +96,7 @@ public class EditorPane extends VBox {
     }
 
     private void handleDeleteEntry() {
+    	Main.getInstance().resetAfkTimer();
         EffortLog selectedLog = effortLogEntryComboBox.getValue();
         Project selectedProject = projectComboBox.getValue();
 
@@ -106,6 +108,7 @@ public class EditorPane extends VBox {
     }
 
     private void handleSplitEntry() {
+    	Main.getInstance().resetAfkTimer();
         EffortLog originalLog = effortLogEntryComboBox.getValue();
         Project selectedProject = projectComboBox.getValue();
 
@@ -117,6 +120,7 @@ public class EditorPane extends VBox {
     }
 
     private void handleClearLog() {
+    	Main.getInstance().resetAfkTimer();
         Project selectedProject = projectComboBox.getValue();
 
         if (selectedProject != null) {
@@ -126,10 +130,12 @@ public class EditorPane extends VBox {
     }
 
     private void handleToConsole() {
+    	Main.getInstance().resetAfkTimer();
         manager.navigateToConsole();
     }
 
     private EffortLog createEffortLogFromFields() {
+    	Main.getInstance().resetAfkTimer();
        
         EffortLog newLog = new EffortLog();
         newLog.setStartTime(startTimeTextField.getText());
@@ -139,6 +145,7 @@ public class EditorPane extends VBox {
     }
 
     private void clearFields() {
+    	Main.getInstance().resetAfkTimer();
 
         dateTextField.clear();
         startTimeTextField.clear();

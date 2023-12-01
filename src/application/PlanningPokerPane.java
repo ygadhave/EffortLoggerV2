@@ -107,14 +107,17 @@ public class PlanningPokerPane extends VBox {
 	}
 	
 	public void setSelectedProject(Project p) {
+		Main.getInstance().resetAfkTimer();
 		selectedProject = p;
 	}
 	
 	public Project getSelectedProject() {
+		Main.getInstance().resetAfkTimer();
 		return selectedProject;
 	}
 	
 	public void openProjectInfoWindow() {
+		Main.getInstance().resetAfkTimer();
 		// Create the project info window
 		PlanningPokerProjectInfoWindow projectInfoWindow = new PlanningPokerProjectInfoWindow(this, manager, selectedProject);
 		Scene mainScene = new Scene(projectInfoWindow, 800, 600);
@@ -126,6 +129,7 @@ public class PlanningPokerPane extends VBox {
 	}
 	
 	public void openLogInfoWindow(EffortLog log) {
+		Main.getInstance().resetAfkTimer();
 		// Create the effort log info window
 		PlanningPokerEffortLogInfoWindow logInfoWindow = new PlanningPokerEffortLogInfoWindow(this, manager, log);
 		Scene mainScene = new Scene(logInfoWindow, 200, 100);
@@ -137,6 +141,7 @@ public class PlanningPokerPane extends VBox {
 	}
 	
 	public void updateProjectInfo(Project newProject) {
+		Main.getInstance().resetAfkTimer();
 		// Get currently selected project and its info
 		selectedProject = newProject;
 		selectedProjectName = selectedProject.getProjectName();
@@ -155,6 +160,7 @@ public class PlanningPokerPane extends VBox {
 	
 	// Updates the displayed effort log list to the current list of effort logs
 	public void updateEffortListArea(Project project) {
+		Main.getInstance().resetAfkTimer();
 		// Clear the current display
 		effortLogListArea.getChildren().clear();
 		
@@ -205,6 +211,7 @@ public class PlanningPokerPane extends VBox {
 	
 	// Updates the displayed defect log list for a certain effort log
 	public void updateDefectListArea(Project project) {
+		Main.getInstance().resetAfkTimer();
 		// Clear the current display
 		clearDefectListArea();
 		
@@ -244,11 +251,13 @@ public class PlanningPokerPane extends VBox {
 	
 	// Clears the currently displayed defect list (DOES NOT SAVE!!!)
 	public void clearDefectListArea() {
+		Main.getInstance().resetAfkTimer();
 		// Clear the current display
 		defectLogListArea.getChildren().clear();
 	}
 	
 	public void saveSettings() {
+		Main.getInstance().resetAfkTimer();
 		try {
 			manager.saveEffortLogSettings(effortLogListArea, selectedProject);
 			manager.saveDefectLogSettings(defectLogListArea, selectedProject);
@@ -266,6 +275,7 @@ public class PlanningPokerPane extends VBox {
 	// Handles clicking the update project info button
 	private class ProjectInfoButtonHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
+			Main.getInstance().resetAfkTimer();
 			try {
 				openProjectInfoWindow();
 			}
@@ -278,6 +288,7 @@ public class PlanningPokerPane extends VBox {
 	// Handles clicking the refresh button
 	private class RefreshButtonHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
+			Main.getInstance().resetAfkTimer();
 			try {
 				// Refresh the list display areas
 				updateEffortListArea(selectedProject);
@@ -292,6 +303,7 @@ public class PlanningPokerPane extends VBox {
 	// Handles clicking the save settings button
 	private class SaveSettingsButtonHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
+			Main.getInstance().resetAfkTimer();
 			saveSettings();
 		}
 	}
@@ -300,6 +312,7 @@ public class PlanningPokerPane extends VBox {
 	// TODO: Update to calculate with all defect logs as well as all effort logs
 	private class GenerateEstimateButtonHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
+			Main.getInstance().resetAfkTimer();
 			try {
 				// Save current settings to the database
 				saveSettings();
@@ -343,6 +356,7 @@ public class PlanningPokerPane extends VBox {
 	// Handles clicking the save settings button
 	private class LogInfoButtonHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
+			Main.getInstance().resetAfkTimer();
 			try {
 				// Get the effort log associated with this list element
 				Button sourceButton = (Button)event.getSource();
