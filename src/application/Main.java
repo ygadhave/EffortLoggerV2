@@ -104,6 +104,8 @@ public class Main extends Application {
 			editorPane.loadData();
 			editorTab.setContent(editorPane);
 			
+			editorManager.setEditorPane(editorPane);
+			
 			// Setup the defect tab
 			defectTab = new Tab("Defect Console");
 			defectManager = new DefectManager(database);
@@ -207,7 +209,7 @@ public class Main extends Application {
 	                }
 	            });
 	        }
-	    }, 5 * 60 * 1000); // 5 minutes in milliseconds
+	    }, 500 * 60 * 1000); // 5 minutes in milliseconds, temp set to 500
 	}
 
     private void logoutUser() {
