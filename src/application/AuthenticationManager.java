@@ -1,5 +1,8 @@
 package application;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 public class AuthenticationManager {
@@ -27,8 +30,25 @@ public class AuthenticationManager {
     }
 
     private String hashPassword(String password) {
-        // Implement password hashing here
-        // Placeholder for hashing logic
-        return password; // This should be replaced with actual hashing
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+
+            // Convert byte array into signum representation
+            BigInteger number = new BigInteger(1, hashedBytes);
+
+            // Convert message digest into hex value
+            StringBuilder hexString = new StringBuilder(number.toString(16));
+
+            // Pad with leading zeros
+            while (hexString.length() < 32) {
+                hexString.insert(0, '0');
+            }
+
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null; // Ideally handle the exception more gracefully
+        }
     }
 }
