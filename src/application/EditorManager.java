@@ -1,17 +1,15 @@
 // EditorManager.java
 package application;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-//import java.util.List;
+import java.util.Arrays;
+import java.util.List;
 
 public class EditorManager {
 	private Database database;
 
-	public EditorManager(Database d) {
-		database = d;
-	}
+    public EditorManager(Database d) {
+        this.database = d;
+    }
 
 	public void updateEffortLogEntry(EffortLog oldEntry, EffortLog newEntry, Project project) {
 		int index = project.getEffortLogs().indexOf(oldEntry);
@@ -20,52 +18,28 @@ public class EditorManager {
 		}
 	}
 
-	public void splitEffortLogEntry(EffortLog originalEntry, Project project) {
-        int index = project.getEffortLogs().indexOf(originalEntry);
-        if (index != -1) {
-            EffortLog newEntry = createSplitEffortLog(originalEntry);
-            String midPointTime = calculateMidPoint(originalEntry);
-            
-            originalEntry.setStopTime(midPointTime);
-            newEntry.setStartTime(midPointTime);
-
-            project.getEffortLogs().add(index + 1, newEntry);
-        }
-    }
-
-    private EffortLog createSplitEffortLog(EffortLog originalEntry) {
- 
-        EffortLog newEntry = new EffortLog();
-        newEntry.setStartTime(originalEntry.getStartTime());
-        newEntry.setWeight(originalEntry.getWeight());
-        newEntry.setBias(originalEntry.getBias());
-        newEntry.setStoryPoints(-1);
-        newEntry.setSelected(originalEntry.getSelected());
-        newEntry.setDefinitions(originalEntry.getDefinitions());
-
-        return newEntry;
-    }
-
-    private String calculateMidPoint(EffortLog originalEntry) {
-
-        String startTime = originalEntry.getStartTime();
-        String stopTime = originalEntry.getStopTime();
+	public void splitEffortLogEntry(EffortLog originalEntry, String midPointTime, Project project) {
+	    int index = project.getEffortLogs().indexOf(originalEntry);
+	    if (index != -1) {
+	    	
+	        EffortLog firstPart = new EffortLog(); 
+	        EffortLog secondPart = new EffortLog();
 
 
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        try {
-            Date startDate = sdf.parse(startTime);
-            Date stopDate = sdf.parse(stopTime);
+	        firstPart.copyPropertiesFrom(originalEntry);
+	        secondPart.copyPropertiesFrom(originalEntry);
 
+	        firstPart.setStopTime(midPointTime);
+	        secondPart.setStartTime(midPointTime);
 
-            long midpointMillis = startDate.getTime() + (stopDate.getTime() - startDate.getTime()) / 2;
+	        project.getEffortLogs().add(index, firstPart); 
+	        project.getEffortLogs().add(index + 1, secondPart); 
 
-            return sdf.format(new Date(midpointMillis));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return "00:00:00";
-        }
-    }
+	        project.getEffortLogs().remove(originalEntry);
+	    }
+	}
+
+    
 
 
 	public void clearLog(Project project) {
@@ -73,11 +47,32 @@ public class EditorManager {
 	}
 
 	public void navigateToConsole() {
-		//Application.getNavigationManager().navigateToEffortLogConsole();
+		
 	}
+	
+	public List<Project> getProjects() {
+	    return database.getProjects();
+	}
+	
+	public List<EffortLog> getEffortLogs(Project project) {
+        return database.getEffortLogs(project);
+    }
 	
 	public void deleteEntry(EffortLog selectedEffortLog) {
 		database.deleteEffortLog(selectedEffortLog);
 	}
+	
+	public List<String> getLifeCycleSteps() {
+        return Arrays.asList("Planning", "Development", "Testing", "Deployment"); 
+	}
+	
+	public List<String> getEffortCategories() {
+        return Arrays.asList("Design", "Coding", "Testing", "Documentation");
+    }
+	
+	public List<String> getEffortPlan() {
+        return Arrays.asList("Project Plan", "Conceptual Design Plan", "Detailed Design Plan", "Implementation Plan");
+    }
+	
 }
 
